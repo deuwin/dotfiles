@@ -12,7 +12,7 @@ A reference of symbol meanings in Impure prompt.
 ## Git Repo Information
 | Symbol        | Unicode  | Meaning         |
 |:--------------|:---------|:----------------|
-| ``           | `\uE0A0` | branch          |
+| ``[^1]       | `\uE0A0` | branch          |
 | `∆` (green)   | `\u2206` | unstaged        |
 | `∆` (orange)  | `\u2206` | staged          |
 | `?`           |          | untracked       |
@@ -55,11 +55,11 @@ Not used but you could add it.
 |:-------|:-------- |
 | `⌛`   | `\u231B` |
 | `⏳`   | `\u23F3` |
-| `⧖ `   | `\u29D6` |
-| `⧗ `   | `\u29D7` |
-| `⧗ `   | `\u29D7` |
+| `⧖`    | `\u29D6` |
+| `⧗`    | `\u29D7` |
+| `⧗`    | `\u29D7` |
 | `⏲`   | `\u23F2` |
-| `⟳ `   | `\u27F3` |
+| `⟳`    | `\u27F3` |
 
 #### Newline
 | Symbol | Unicode  |
@@ -79,14 +79,13 @@ Multiuse symbols, nice if you fancy colouring the symbols.
 #### Branch
 | Symbol  | Unicode   |
 |:------- |:----------|
-| ``     | `\uE0A0`  |
 | `λ`     | `\u03BB`  |
 | `⎇`     | `\u2387`  |
 | `⌥`     | `\u2325`  |
-| ``[^1] | `\uE725`  |
 | `ᚴ`     | `\u16B4`  |
 | `𐳦`     | `\U10CE6` |
 | `𐲦`     | `\U10CA6` |
+| ``[^1] | `\uE0A0`  |
 
 #### Changes
 Usable for staged and unstaged, or both at the same time if you apply colours.
