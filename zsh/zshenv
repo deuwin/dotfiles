@@ -40,8 +40,6 @@ export LESSHISTFILE="$HOME/.local/state/lesshst"
 typeset -U path
 path+=($HOME/.local/bin)
 
-export _use_autocomplete=true
-if $_use_autocomplete; then
-    skip_global_compinit=1
-fi
+# as required by zsh-autocomplete
+skip_global_compinit=1
 
