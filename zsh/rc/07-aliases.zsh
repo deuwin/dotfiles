@@ -9,6 +9,15 @@
 
 
 ####
+# Named Directories
+# strictly speaking not an alias but a damn handy way to create a directory
+# bookmark you can access anywhere.
+#
+# e.g. use `~my_dir` to get to my_directory
+# hash -d my_dir=/path/to/my_directory
+
+
+####
 # sudo
 # enable aliases to be sudo’ed
 #
@@ -104,7 +113,6 @@ fi
 alias find="noglob find"
 alias findn="find . -name"
 alias findi="find . -iname"
-alias findh="find . -type d \( -path ./spinny_disk \) -prune -o -iname"
 
 
 ####
