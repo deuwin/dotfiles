@@ -164,11 +164,11 @@ _impure_git_get_extra_info() {
 
     # staged - renamed files count as a staged change
     local count
-    count=$(grep --count "^\(A  \)\|\(R  \)" <<< $git_status)
+    count=$(grep --count -E "^(A  )|(R  )|(M. )" <<< $git_status)
     msg+=$(_impure_git_append ${_ig_symbols[staged]} $count)
 
     # unstaged
-    count=$(grep --count "^ M " <<< $git_status)
+    count=$(grep --count "^.M " <<< $git_status)
     msg+=$(_impure_git_append ${_ig_symbols[unstaged]} $count)
 
     # deleted - counts deletions in staged and unstaged
