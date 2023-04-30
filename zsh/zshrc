@@ -1,0 +1,29 @@
+#!/usr/bin/env zsh
+
+# A collection of settings inspired by/stolen from:
+#   https://thevaluable.dev/zsh-install-configure-mouseless/
+#   https://wiki.archlinux.org/title/zsh#Sample_.zshrc_files
+#   https://ruderich.org/simon/config/zshrc
+#   random advice I might have forgotten to attribute
+#
+
+# Execute tmux if:
+#   - it's available,
+#   - we have some configuration for it, and
+#   - an appropriate terminal
+[ -t 1 ] && (( $+commands[tmux] )) && \
+    [[ -f ~/.config/tmux/tmux.conf && -z $TMUX ]] && \
+    [[ $PPID != 1 && $$ != 1 ]] && \
+    [[ $TERM != dumb && $TERM != linux && $TERM != screen* ]] && \
+    ! pstree -s $$ | grep -wq code && \
+    ! pstree -s $$ | grep -wq codium && \
+    [[ -f $ZDOTDIR/scripts/tmux_session_select.zsh ]] && \
+        $ZDOTDIR/scripts/tmux_session_select.zsh
+
+####
+# rc files
+#
+for file in $ZDOTDIR/rc/*; do
+    source $file
+done
+
