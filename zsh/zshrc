@@ -15,8 +15,8 @@
     [[ -f ~/.config/tmux/tmux.conf && -z $TMUX ]] && \
     [[ $PPID != 1 && $$ != 1 ]] && \
     [[ $TERM != dumb && $TERM != linux && $TERM != screen* ]] && \
-    ! pstree -s $$ | grep -wq code && \
-    ! pstree -s $$ | grep -wq codium && \
+    ! pstree -s $$ | grep --word-regexp --quiet --extended-regexp "cod(e|ium)" && \
+    [[ "$TERM_PROGRAM" != "vscode" ]] && \
     [[ -f $ZDOTDIR/scripts/tmux_session_select.zsh ]] && \
         $ZDOTDIR/scripts/tmux_session_select.zsh
 
