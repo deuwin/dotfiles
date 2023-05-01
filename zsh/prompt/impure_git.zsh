@@ -26,8 +26,8 @@ typeset -rgA _ig_formats=(
     [bracket]=%F{default}
     [repo_name]=%F{default}
     [branch]=%F{5}
-    [misc]=%F{cyan}
-    [action]=%F{green}
+    [misc]=%F{green}
+    [action]=%F{cyan}
 )
 
 typeset -rgA _ig_symbols=(
@@ -93,8 +93,6 @@ if $_IMPURE_GIT_INFO_RPROMPT; then
         _impure_git_rprompt+=" $_ig_formats[branch]$_ig_vcs_info[branch]"
         [[ -n $_ig_vcs_info[action] ]] && \
             _impure_git_rprompt+=" $_ig_formats[action]$_ig_vcs_info[action]"
-        [[ -n $_ig_vcs_info[misc] ]] && \
-            _impure_git_rprompt+=" $_ig_formats[misc]$_ig_vcs_info[misc]"
         [[ -n $_ig_change_info ]] && \
             _impure_git_rprompt+=" $_ig_change_info"
         _impure_git_rprompt+="${_ig_formats[bracket]}]"
@@ -113,8 +111,6 @@ else
         _impure_git_prompt+=" $_ig_formats[branch]$_ig_vcs_info[branch]"
         [[ -n $_ig_vcs_info[action] ]] && \
             _impure_git_prompt+=" $_ig_formats[action]$_ig_vcs_info[action]"
-        [[ -n $_ig_vcs_info[misc] ]] && \
-            _impure_git_prompt+=" $_ig_formats[misc]$_ig_vcs_info[misc]"
         [[ -n $_ig_change_info ]] && \
             _impure_git_prompt+=" ${_ig_formats[bracket]}[" && \
             _impure_git_prompt+="$_ig_change_info" && \
@@ -142,6 +138,10 @@ _impure_git_get_info() {
     msg[branch]=$vcs_info_msg_1_
     msg[action]=$vcs_info_msg_2_
     msg[misc]=$vcs_info_msg_3_
+
+    # for k v in ${(@kv)msg}; do
+    #     _impure_debug "msg: $k -> $v"
+    # done
 
     print -r "${(@qkv)msg}"
 }
