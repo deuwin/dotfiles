@@ -143,7 +143,7 @@ _impure_git_get_info() {
     msg[action]=$vcs_info_msg_2_
     msg[misc]=$vcs_info_msg_3_
 
-    print "${(@qkv)msg}"
+    print -r "${(@qkv)msg}"
 }
 
 _impure_git_get_extra_info() {
