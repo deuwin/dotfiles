@@ -250,9 +250,9 @@ _impure_git_setup() {
     # zstyle ":vcs_info:*+*:*" debug true
 
     # no idea what misc info git provides here, so let's just leave it in and see
-    zstyle ":vcs_info:git*" max-exports   4
-    zstyle ":vcs_info:git*" formats       "%r" "%b" "%a" "%m"
-    zstyle ":vcs_info:git*" actionformats "%r" "%b" "%a" "%m"
+    zstyle ":vcs_info:*"     max-exports   4
+    zstyle ":vcs_info:git:*" formats       "%r" "%b" "%a" "%m"
+    zstyle ":vcs_info:git:*" actionformats "%r" "%b" "%a" "%m"
 
     # asynchronous VCS status
     source $ZDOTDIR/plugins/zsh-async/async.zsh
