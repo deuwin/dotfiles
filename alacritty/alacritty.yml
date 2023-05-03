@@ -1,0 +1,64 @@
+# Import some colour!
+import:
+  - ~/.config/alacritty/colours/spacegray-eighties-chrome.yml
+
+window:
+  # Spread additional padding evenly around the terminal content.
+  dynamic_padding: true
+
+  # Window decorations
+  decorations: none
+
+  # Background opacity
+  opacity: 0.65
+
+  # Startup Mode
+  startup_mode: Maximized
+
+  # Allow terminal applications to change Alacritty's window title.
+  dynamic_title: true
+
+# Font configuration
+font:
+  normal:
+    family: Inconsolata_NerdFont_Fallback
+    style: Regular
+
+  bold:
+    family: Inconsolata
+    style: Semibold
+
+  italic:
+    family: Inconsolata
+    style: Italic
+
+  bold_italic:
+    family: Inconsolata
+    style: Bold Italic
+
+  size: 12.0
+
+  builtin_box_drawing: true
+
+# Draw bold text using the bright color variants.
+draw_bold_text_with_bright_colors: false
+
+# an intriguing idea, perhaps I'll make a colour scheme to take advantage of it...
+# colors:
+  # Transparent cell backgrounds
+  #
+  # Whether or not `window.opacity` applies to all cell backgrounds or only to
+  # the default background. When set to `true` all cells will be transparent
+  # regardless of their background color.
+  # transparent_background_colors: true
+
+selection:
+  save_to_clipboard: true
+
+cursor:
+  style:
+    blinking: Always
+
+mouse:
+  hide_when_typing: true
+

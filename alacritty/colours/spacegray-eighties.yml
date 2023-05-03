@@ -1,0 +1,27 @@
+# Spacegray Eighties
+# https://github.com/mhkeller/spacegray-eighties-iterm
+colors:
+  primary:
+    background: '0x222222'
+    foreground: '0xbdbaae'
+
+  normal:
+    black:   '0x15171c'
+    red:     '0xec5f67'
+    green:   '0x81a764'
+    yellow:  '0xfec254'
+    blue:    '0x5486c0'
+    magenta: '0xbf83c1'
+    cyan:    '0x57c2c1'
+    white:   '0xefece7'
+
+  bright:
+    black:   '0x555555'
+    red:     '0xff6973'
+    green:   '0x93d493'
+    yellow:  '0xffd256'
+    blue:    '0x4d84d1'
+    magenta: '0xff55ff'
+    cyan:    '0x83e9e4'
+    white:   '0xffffff'
+

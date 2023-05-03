@@ -1,0 +1,34 @@
+# Spacegray Eighties Chrome
+#
+# Based off Spacegray Eighties for iTerm with a couple of tweaks
+# https://github.com/mhkeller/spacegray-eighties-iterm
+#
+#   - slightly less bright magenta,
+#   - and the white shades from eighties.dark (https://terminal.sexy)
+#
+
+colors:
+  primary:
+    background: '#222222'
+    foreground: '#bdbaae'
+
+  normal:
+    black:   '#15171c'
+    red:     '#ec5f67'
+    green:   '#81a764'
+    yellow:  '#fec254'
+    blue:    '#5486c0'
+    magenta: '#bf83c1'
+    cyan:    '#57c2c1'
+    white:   '#d3d0c8'
+
+  bright:
+    black:   '#555555'
+    red:     '#ff6973'
+    green:   '#93d493'
+    yellow:  '#ffd256'
+    blue:    '#599df5'
+    magenta: '#f782ff'
+    cyan:    '#83e9e4'
+    white:   '#f2f0ec'
+
