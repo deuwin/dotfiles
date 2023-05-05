@@ -123,8 +123,6 @@ if is_command ack; then
 fi
 alias grep="grep --color=auto"
 alias grepi="grep -i"
-alias fgrep="fgrep --color=auto"
-alias egrep="egrep --color=auto"
 
 
 ####
