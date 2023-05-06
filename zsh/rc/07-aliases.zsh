@@ -28,7 +28,7 @@ alias sudo="sudo "
 # Edit and Source Configs
 #
 alias ec="$EDITOR $ZDOTDIR/zshrc"
-alias ea="$EDITOR $ZDOTDIR/rc/98-aliases.zsh"
+alias ea="$EDITOR $ZDOTDIR/rc/07-aliases.zsh"
 alias et="$EDITOR $HOME/.config/tmux/tmux.conf"
 alias ev="$EDITOR $HOME/.config/vim/vimrc"
 alias sc="exec zsh"
@@ -53,10 +53,10 @@ mkcd() {
 }
 
 if is_command lsd; then
-    alias ls="lsd --classify --color=auto --group-directories-first"
+    alias ls="lsd --color=auto --group-directories-first"
     alias l.="la --ignore-glob='[a-zA-Z]*'"
 else
-    alias ls="ls --classify=auto --color=auto --group-directories-first"
+    alias ls="ls --classify --color=auto --group-directories-first"
     alias l.="la --ignore='[a-zA-Z]*'"
 fi
 alias la="ls --almost-all -v"
