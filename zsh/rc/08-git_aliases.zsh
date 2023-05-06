@@ -80,6 +80,8 @@ alias gcpnc="git cherry-pick --no-commit" # pull changes without commit
 ## fix stuff
 alias gca="git commit --amend"
 alias grbi="git rebase --interactive"
+alias grba="git rebase --abort"
+alias grbc="git rebase --continue"
 
 ## unchange stuff
 alias gr="git restore"
