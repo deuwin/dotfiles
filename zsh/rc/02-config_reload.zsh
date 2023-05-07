@@ -8,6 +8,12 @@ zmodload -F zsh/stat b:zstat
 autoload -Uz add-zsh-hook
 zmodload zsh/datetime
 
+_zshrc_reload_log() {
+    print -P "    $1"
+    local zero_len='%([BSUbfksu]|([FB]|){*})'
+    _impure_info "${(S%)1//$~zero_len/}"
+}
+
 
 ####
 # Restart Settings
@@ -35,7 +41,7 @@ _zshrc_restart_precmd() {
     for files in $(printf "$ZDOTDIR/%s\n" ${_zshrc_watch_files}); do
         for file in ${~files}; do
             zstat -A mtime +mtime $file
-            if (($mtime > $_zshrc_start_time)); then
+            if ((mtime > _zshrc_start_time)); then
                 changed_file=$file
                 break 2
             fi
@@ -49,19 +55,19 @@ _zshrc_restart_precmd() {
     local startup
     strftime -s startup '%Y-%m-%d %H:%M:%S' $_zshrc_start_time
 
-    print -P "    %F{cyan}${changed_file#$ZDOTDIR/} modified since startup" \
-             "($startup)%f"
+    _zshrc_reload_log \
+        "%F{cyan}${changed_file#$ZDOTDIR/} modified since startup ($startup)%f"
 
     # check if disabled
     if [[ -n $_zshrc_disable_restart ]]; then
-        print "    Automatic restart disabled."
+        _zshrc_reload_log "Automatic restart disabled."
         return
     fi
 
     # Don't exec if we have background processes as we will lose control over
     # them
     if [[ ${#${(k)jobstates}} -ne 0 ]]; then
-        print "    Active background jobs!"
+        _zshrc_reload_log "Active background jobs, no restart"
         return
     fi
 
@@ -69,12 +75,11 @@ _zshrc_restart_precmd() {
     # Don't kill our current session by execing it, abort instead.
     zsh -i -c "exit 42"
     if [[ $? -ne 42 ]]; then
-        print -P "    %F{red}%BFailed to start new zsh!%f%b"
+        _zshrc_reload_log "%F{red}%BFailed to start new zsh!%f%b"
         return
     fi
 
-    _impure_info "Restarting zsh..."
-    print "    Restarting zsh...\n"
+    _zshrc_reload_log "Restarting zsh..."
     exec zsh
 }
 add-zsh-hook precmd _zshrc_restart_precmd
@@ -105,7 +110,7 @@ _zshenv_reload_preexec() {
     fi
     _zshenv_reload_time=$EPOCHSECONDS
 
-    _impure_info "Reloading zshenv..."
+    _impure_info "zshenv modified. Reloading..."
     unsetopt warn_create_global
     source $zshenv
     setopt warn_create_global
