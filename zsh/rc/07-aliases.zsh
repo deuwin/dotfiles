@@ -91,8 +91,6 @@ alias chmod="chmod --verbose"
 alias curl="noglob curl"
 alias df="df --human-readable"
 alias diff="diff --color=auto"
-alias du="du --human-readable --total"
-alias duh="du --max-depth=1"
 alias ip="ip --color"
 alias wget="wget --hsts-file=$HOME/.config/wget-hsts"
 alias tarx="tar -xvf"
@@ -102,6 +100,14 @@ if is_command diff-so-fancy; then
         diff --new-file --text --unified --recursive --show-c-function \
             "$1" "$2" | diff-so-fancy | less
     }
+fi
+# dud - disk usage directories
+if is_command dust; then
+    alias du="dust"
+    alias dud="dust --depth 1 --only-dir"
+else
+    alias du="du --human-readable --total"
+    alias dud="du --max-depth=1"
 fi
 
 
