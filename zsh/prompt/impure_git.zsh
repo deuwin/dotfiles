@@ -133,7 +133,7 @@ _impure_git_get_info() {
     vcs_info
 
     typeset -A msg
-    msg[cwd]=${1##*/}
+    msg[cwd]=${1:t}
     msg[repo_name]=$vcs_info_msg_0_
     msg[branch]=$vcs_info_msg_1_
     msg[action]=$vcs_info_msg_2_
@@ -230,12 +230,12 @@ _impure_git_start_async() {
 #
 _impure_git_precmd() {
     if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
-        _impure_git_render_info ${PWD##*/} true
+        _impure_git_render_info ${PWD:t} true
         async_flush_jobs impure_git_status
         async_job impure_git_status _impure_git_get_info $PWD
         async_job impure_git_status _impure_git_get_extra_info $PWD
     else
-        _impure_git_render_info ${PWD##*/} false
+        _impure_git_render_info ${PWD:t} false
     fi
 }
 
