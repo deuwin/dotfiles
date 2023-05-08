@@ -82,7 +82,7 @@ typeset -g _impure_git_prompt
 typeset -g _impure_git_rprompt
 if $_IMPURE_GIT_INFO_RPROMPT; then
     _impure_git_render_info() {
-        if ! $2; then
+        if [ -z $1 ]; then
             _impure_git_rprompt=""
             return
         fi
@@ -99,12 +99,11 @@ if $_IMPURE_GIT_INFO_RPROMPT; then
     }
 else
     _impure_git_render_info() {
-        if ! $2; then
-            _impure_git_prompt=""
+        _impure_git_prompt=""
+        if [ -z $1 ]; then
             return
         fi
 
-        _impure_git_prompt=""
         [[ $1 != $_ig_vcs_info[repo_name] ]] && \
             _impure_git_prompt+=" $_ig_formats[repo_name]$_ig_vcs_info[repo_name]"
         _impure_git_prompt+=" $_ig_symbols[branch]"
@@ -230,12 +229,12 @@ _impure_git_start_async() {
 #
 _impure_git_precmd() {
     if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
-        _impure_git_render_info ${PWD:t} true
+        _impure_git_render_info ${PWD:t}
         async_flush_jobs impure_git_status
         async_job impure_git_status _impure_git_get_info $PWD
         async_job impure_git_status _impure_git_get_extra_info $PWD
     else
-        _impure_git_render_info ${PWD:t} false
+        _impure_git_render_info
     fi
 }
 
