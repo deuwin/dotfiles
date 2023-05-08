@@ -1,5 +1,7 @@
 # Inspired by/stolen from:
 # https://github.com/davidde/git
+# https://github.com/junegunn/fzf/wiki/examples#git
+# https://github.com/rothgar/mastering-zsh/blob/master/docs/helpers/functions.md
 
 # tl;dr?
 # curl cheat.sh/git
@@ -59,6 +61,8 @@ alias gdp="git --no-pager diff"           # w/o diff-so-fancy
 alias gdsp="git --no-pager diff --staged" # w/o diff-so-fancy
 # when was <string> committed?
 alias gloc="_git_locate_string"
+# interactive commit browser
+alias fshow="_fzf_commit_browser"
 
 ## change stuff
 # add
@@ -223,3 +227,31 @@ _list_references() {
         "
 }
 
+# fshow - git commit browser
+_fzf_commit_browser() {
+    if ! is_command fzf; then
+        printf '%s\n' \
+            "Missing required dependancy: fzf" \
+            "https://github.com/junegunn/fzf"
+        return 1
+    fi
+
+    local dsf
+    if is_command diff-so-fancy; then
+        dsf="| diff-so-fancy"
+    else
+        dsf=""
+    fi
+    git log --graph --format="%C(auto)%h %C(default)%s%C(auto)%d" --color=always "$@" |
+        fzf --layout=reverse --ansi --no-sort \
+            --preview "echo {} | grep --only-matching '[a-f0-9]\{7\}' | head -1 |
+                    xargs -I@ sh -c 'git show --color=always @ $dsf'" \
+            --bind "enter:execute:
+                    (grep -o '[a-f0-9]\{7\}' | head -1 \
+                        | xargs -I % sh -c 'git show --color=always % \
+                                            $dsf \
+                                            | less -+--no-init -+--quit-if-one-screen'
+                    ) << 'FZF-EOF'
+                    {}
+FZF-EOF"
+}
