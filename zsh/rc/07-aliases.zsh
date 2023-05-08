@@ -55,6 +55,7 @@ mkcd() {
 if is_command lsd; then
     alias ls="lsd --color=auto --group-directories-first"
     alias l.="la --ignore-glob='[a-zA-Z]*'"
+    alias lt='ls --tree'
 else
     alias ls="ls --classify --color=auto --group-directories-first"
     alias l.="la --ignore='[a-zA-Z]*'"
