@@ -140,11 +140,11 @@ alias glog-oneline="git log --pretty=format:'%C(auto)%h %C(default)%s%C(auto)%d'
 
 # Locate all commits in which a string was first introduced
 _git_locate_string() {
-  if [[ -z $1 ]]; then
-    echo "Usage:    git_loc <string> [<file>]"
-    return 1
-  fi
-  gl -S "$1" -- $2
+    if [[ -z $1 ]]; then
+        echo "Usage: gloc <string> [<file>]"
+        return 1
+    fi
+    gl -S "$1" -- $2
 }
 
 _git_clone_cd () {
@@ -158,7 +158,7 @@ _git_clone_cd () {
 # Show a specified file from stash x (defaults to latest stash):
 _git_show_stash_file() {
     if [ -z "$1" ]; then
-        echo "Usage:    git_show_stash_file <file> [<stash number>]"
+        echo "Usage: gshsf <file> [<stash number>]"
         return 1
     fi
     git show stash@{${2:-0}}:$1
