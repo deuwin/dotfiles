@@ -75,6 +75,7 @@ cl() {
 #
 alias trash="gio trash"
 alias cp="cp --interactive --verbose"
+alias cpv="rsync --archive --partial --human-readable --info=stats1,progress2 --modify-window=1"
 alias mv="mv --interactive --verbose"
 alias rm="rm --interactive=once --verbose"
 alias mkdir="mkdir --verbose"
@@ -96,6 +97,7 @@ alias ip="ip --color"
 alias wget="wget --hsts-file=$HOME/.config/wget-hsts"
 alias tarx="tar -xvf"
 alias tailf="tail -F"
+alias cmx="chmod u+x"
 if is_command diff-so-fancy; then
     dsf() {
         diff --new-file --text --unified --recursive --show-c-function \
@@ -109,6 +111,10 @@ if is_command dust; then
 else
     alias du="du --human-readable --total"
     alias dud="du --max-depth=1"
+fi
+if is_command nala; then
+    alias apt="echo 'Don\'t you mean nala?'"
+    alias apt-get="apt"
 fi
 
 
@@ -133,19 +139,10 @@ alias grepi="grep -i"
 
 
 ####
-# nala
-#
-alias apt="echo 'Don\'t you mean nala?'"
-alias apt-get="apt"
-
-
-####
 # Convenience Aliases
 #
 # concise list of mounts
 alias mnt="mount | grep -E ^/dev | column -t"
-# copying a large amount of data? why not have a progress bar!
-alias cpv="rsync --archive --partial --human-readable --info=stats1,progress2 --modify-window=1"
 # list the most commonly used commands
 historystat() {
     history 0 | awk '{print $2}' | sort | uniq -c | sort -n -r | head
