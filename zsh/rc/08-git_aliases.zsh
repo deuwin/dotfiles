@@ -228,30 +228,31 @@ _list_references() {
 }
 
 # fshow - git commit browser
-_fzf_commit_browser() {
-    if ! is_command fzf; then
+if ! is_command fzf; then
+    _fzf_commit_browser() {
         printf '%s\n' \
             "Missing required dependancy: fzf" \
             "https://github.com/junegunn/fzf"
         return 1
-    fi
+    }
+else
+    _fzf_commit_browser() {
+        local gfmt="%C(auto)%h %s%d"
+        local gshow="git show --color=always"
+        local lopts="--RAW-CONTROL-CHARS -+--no-init -+--quit-if-one-screen"
+        local dfmt=""
+        if command -v diff-so-fancy > /dev/null; then
+            dfmt="| diff-so-fancy"
+        fi
 
-    local dsf
-    if is_command diff-so-fancy; then
-        dsf="| diff-so-fancy"
-    else
-        dsf=""
-    fi
-    git log --graph --format="%C(auto)%h %C(default)%s%C(auto)%d" --color=always "$@" |
-        fzf --layout=reverse --ansi --no-sort \
-            --preview "echo {} | grep --only-matching '[a-f0-9]\{7\}' | head -1 |
-                    xargs -I@ sh -c 'git show --color=always @ $dsf'" \
-            --bind "enter:execute:
-                    (grep -o '[a-f0-9]\{7\}' | head -1 \
-                        | xargs -I % sh -c 'git show --color=always % \
-                                            $dsf \
-                                            | less -+--no-init -+--quit-if-one-screen'
-                    ) << 'FZF-EOF'
-                    {}
-FZF-EOF"
-}
+        git log --graph --format=$gfmt --color=always "$@" |
+            fzf --layout=reverse --ansi --no-sort \
+                --preview "echo {} | grep --only-matching '[a-f0-9]\{7\}' |
+                           head -1 | xargs -I@ sh -c '$gshow @ $dfmt'" \
+                --bind "enter:execute:(
+                            grep --only-matching '[a-f0-9]\{7\}' | head -1 |
+                                xargs -I % sh -c '$gshow % $dfmt |
+                                less $lopts'
+                        ) <<< {}"
+    }
+fi
