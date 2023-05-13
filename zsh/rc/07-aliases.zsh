@@ -123,9 +123,22 @@ fi
 # pre-filled with oft used arguments and prefixed with
 # noglob cos I'm sick of quoting
 #
+if is_command fdfind; then
+    alias fd="noglob fdfind"
+    alias fdf="fd --type f"
+    alias fdd="fd --type d"
+else
+    alias fd="_fd"
+fi
 alias find="noglob find"
-alias findn="find . -name"
-alias findi="find . -iname"
+_fd() {
+    find . -iname "*$1*"
+}
+alias findi="_fd"
+_findn() {
+    find . -name "*$1*"
+}
+alias findn="_findn"
 
 
 ####
