@@ -32,8 +32,10 @@ LESS+="--no-init "              # ignore termcap initialisation, in xterm this
                                 # http://www.shallowsky.com/linux/noaltscreen.html
 LESS+="--mouse "                # mouse support
 LESS+="--wheel-lines=3 "        # mouse scroll speed
+LESS+="--hilite-search "        # only highlight last result from search
 export LESS
 export LESSHISTFILE="$HOME/.local/state/lesshst"
+export LESSKEYIN="$HOME/.config/lesskey"
 
 # PATH
 # https://zsh.sourceforge.io/Guide/zshguide02.html#l24
