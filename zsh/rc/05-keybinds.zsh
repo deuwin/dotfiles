@@ -47,7 +47,7 @@ bindkey -M menuselect "$key[Left]" _accept_and_back_char
 #   start of line: Ctrl+u
 #   end of line:   Ctrl+k
 # with copy to clipboard cos that's kinda handy
-if is_command xsel > /dev/null; then
+if is_command xsel; then
     _forward-kill-line() {
         zle kill-line
         echo -n "${CUTBUFFER}" | xsel --input --clipboard
