@@ -52,6 +52,12 @@ mkcd() {
     mkdir -p "$1" && cd "$1"
 }
 
+# Create temporary dir and cd into it
+cdt() {
+    builtin cd "$(mktemp -d)"
+    builtin pwd
+}
+
 if is_command lsd; then
     alias ls="lsd --color=auto --group-directories-first"
     alias l.="la --ignore-glob='[a-zA-Z]*'"
