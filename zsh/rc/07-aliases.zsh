@@ -144,6 +144,16 @@ alias findn="_findn"
 ####
 # Find in Files
 #
+if is_command rg; then
+    rg() {
+        # page automatically if outputting to a terminal
+        if [ -t 1 ];then
+            command rg --smart-case --pretty $@ | less --RAW-CONTROL-CHARS
+        else
+            command rg --smart-case --pretty $@
+        fi
+    }
+fi
 if is_command ack; then
     alias ack="ack --smart-case --pager=less"
 fi
