@@ -98,12 +98,6 @@ alias wget="wget --hsts-file=$HOME/.config/wget-hsts"
 alias tarx="tar -xvf"
 alias tailf="tail -F"
 alias cmx="chmod u+x"
-if is_command diff-so-fancy; then
-    dsf() {
-        diff --new-file --text --unified --recursive --show-c-function \
-            "$1" "$2" | diff-so-fancy | less
-    }
-fi
 # dud - disk usage directories
 if is_command dust; then
     alias du="dust"

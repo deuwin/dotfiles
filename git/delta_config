@@ -1,0 +1,15 @@
+# options for delta syntax highlighting pager
+# https://github.com/dandavison/delta
+[interactive]
+    diffFilter = delta --color-only
+[core]
+    pager = delta
+[delta]
+    navigate = true    # use n and N to move between diff sections
+    light = false
+    line-numbers = true
+    width = variable
+[merge]
+    conflictstyle = diff3
+[diff]
+    colorMoved = default

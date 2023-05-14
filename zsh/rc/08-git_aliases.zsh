@@ -57,8 +57,8 @@ alias gsto="git status --untracked-files=no" # tracked only
 alias gd="git diff"
 alias gds="git diff --staged" # changes between staged and HEAD
 alias gdh="git diff HEAD"     # changes between unstaged and HEAD
-alias gdp="git --no-pager diff"           # w/o diff-so-fancy
-alias gdsp="git --no-pager diff --staged" # w/o diff-so-fancy
+alias gdp="git --no-pager diff"           # w/o delta
+alias gdsp="git --no-pager diff --staged" # w/o delta
 # when was <string> committed?
 alias gloc="_git_locate_string"
 # interactive commit browser
@@ -239,10 +239,10 @@ else
     _fzf_commit_browser() {
         local gfmt="%C(auto)%h %s%d"
         local gshow="git show --color=always"
-        local lopts="--RAW-CONTROL-CHARS -+--no-init -+--quit-if-one-screen"
         local dfmt=""
-        if command -v diff-so-fancy > /dev/null; then
-            dfmt="| diff-so-fancy"
+        if command -v delta > /dev/null; then
+            local lopts="--RAW-CONTROL-CHARS -+--no-init -+--quit-if-one-screen"
+            dfmt="| delta --paging always --pager \"less $lopts\""
         fi
 
         git log --graph --format=$gfmt --color=always "$@" |
@@ -251,8 +251,7 @@ else
                            head -1 | xargs -I@ sh -c '$gshow @ $dfmt'" \
                 --bind "enter:execute:(
                             grep --only-matching '[a-f0-9]\{7\}' | head -1 |
-                                xargs -I % sh -c '$gshow % $dfmt |
-                                less $lopts'
+                                xargs -I % sh -c '$gshow % $dfmt'
                         ) <<< {}"
     }
 fi
