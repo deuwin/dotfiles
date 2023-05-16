@@ -1,7 +1,7 @@
 # options for delta syntax highlighting pager
 # https://github.com/dandavison/delta
 [interactive]
-    diffFilter = delta --color-only
+    diffFilter = delta --color-only --features=interactive
 [core]
     pager = delta
 [delta]
@@ -9,6 +9,8 @@
     line-numbers = true
     width        = variable
     features     = odontodactylus-scyllarus
+[delta "interactive"]
+    keep-plus-minus-markers = false
 [delta "odontodactylus-scyllarus"]
     dark                          = true
     file-decoration-style         = blue box
