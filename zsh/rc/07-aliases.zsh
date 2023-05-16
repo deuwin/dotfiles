@@ -128,17 +128,15 @@ if is_command fdfind; then
     alias fdf="fd --type f"
     alias fdd="fd --type d"
 else
-    alias fd="_fd"
+    alias fd="findi"
 fi
 alias find="noglob find"
-_fd() {
-    find . -iname "*$1*"
-}
-alias findi="_fd"
-_findn() {
+findn() {
     find . -name "*$1*"
 }
-alias findn="_findn"
+findi() {
+    find . -iname "*$1*"
+}
 
 
 ####
