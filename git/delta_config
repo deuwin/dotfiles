@@ -5,10 +5,23 @@
 [core]
     pager = delta
 [delta]
-    navigate = true    # use n and N to move between diff sections
-    light = false
+    navigate     = true
     line-numbers = true
-    width = variable
+    width        = variable
+    features     = odontodactylus-scyllarus
+[delta "odontodactylus-scyllarus"]
+    dark                          = true
+    file-decoration-style         = blue box
+    file-style                    = white
+    hunk-header-decoration-style  = blue ul
+    hunk-header-line-number-style = white
+    line-numbers-left-format      = {nm:^4}┆
+    line-numbers-left-style       = 241
+    line-numbers-minus-style      = 160
+    line-numbers-plus-style       = 28
+    line-numbers-right-style      = 243
+    line-numbers-zero-style       = 243
+    syntax-theme                  = Monokai Extended
 [merge]
     conflictstyle = diff3
 [diff]
