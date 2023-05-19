@@ -10,25 +10,78 @@ is_command() {
 # Logging
 #
 _IMPURE_LOGGING=true
-_IMPURE_LOGFILE="/tmp/impure.log"
+_IMPURE_LOGDIR="$HOME/.local/state/impure/logs"
+_IMPURE_LOGFILE="$_IMPURE_LOGDIR/impure.log"
+_IMPURE_LAST_ROTATE="$_IMPURE_LOGDIR/last_rotate"
+
+zmodload zsh/datetime
+zmodload zsh/system
+
+_impure_rotate_logs() {
+    # Check for last log rotation. If non-existent I guess we're starting afresh
+    if [[ ! -f $_IMPURE_LAST_ROTATE ]]; then
+        print $EPOCHSECONDS >| $_IMPURE_LAST_ROTATE
+        return
+    fi
+
+    # When was midnight?
+    local today midnight
+    strftime -s today %F
+    strftime -rs midnight %F ${today}
+
+    # Last rotation
+    local last_rotate
+    last_rotate=$(<$_IMPURE_LAST_ROTATE)
+    ((last_rotate > midnight)) && return
+
+    # Lock logfile, if it exists
+    if [[ ! -f $_IMPURE_LOGFILE ]]; then
+        return
+    fi
+    zsystem flock $_IMPURE_LOGFILE
+
+    # Move logs
+    local _MAX_LOGFILES=5 ii
+    for ii in {$((_MAX_LOGFILES - 1))..1}; do
+        [[ -f $_IMPURE_LOGFILE.$ii ]] && \
+            command mv -f "$_IMPURE_LOGFILE.$ii" "$_IMPURE_LOGFILE.$((ii + 1))"
+    done
+    command mv -f "$_IMPURE_LOGFILE" "$_IMPURE_LOGFILE.1"
+
+    print $EPOCHSECONDS >| $_IMPURE_LAST_ROTATE
+}
 
 if $_IMPURE_LOGGING; then
     if [[ -n $_IMPURE_LOGFILE ]]; then
+        if [ ! -d $_IMPURE_LOGDIR ]; then
+            mkdir -p $_IMPURE_LOGDIR
+        fi
+
+        # Check if we should rotate the logs. Ran in subshell, for automatic
+        # release of lock
+        (_impure_rotate_logs)
+
         _impure_log() {
-            printf "[%s] %s: %s: %s\n" \
-                    "$(date '+%Y/%m/%d %H:%M:%S.%N')" \
-                    "$1" \
-                    $funcstack[3] \
-                    "$2" >> $_IMPURE_LOGFILE
+            local level="$1" msg="$2"
+            # In subshell, for automatic release of lock
+            (
+                [[ -f $_IMPURE_LOGFILE ]] && zsystem flock $_IMPURE_LOGFILE
+                print -P "[%D{%F %T.%.}]" \
+                    "[$level]" \
+                    "$TTY:" \
+                    "$funcstack[-1]" \
+                    "\"$msg\"" >>| "$_IMPURE_LOGFILE"
+            )
         }
+
         _impure_error() {
             _impure_log "Error" "$1"
         }
         _impure_warning() {
-            _impure_log " Warn" "$1"
+            _impure_log "Warn " "$1"
         }
         _impure_info() {
-            _impure_log " Info" "$1"
+            _impure_log "Info " "$1"
         }
         _impure_debug() {
             _impure_log "Debug" "$1"
