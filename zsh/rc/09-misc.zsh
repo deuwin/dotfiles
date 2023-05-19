@@ -9,3 +9,7 @@ zle -N bracketed-paste bracketed-paste-magic
 
 # ssh keys
 source $ZDOTDIR/scripts/ssh_agent.zsh
+
+# Unfunction rc helpers 
+unfunction is_command
+
