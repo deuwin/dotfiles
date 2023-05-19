@@ -51,6 +51,7 @@ alias glo="glog-oneline"
 alias glp="glog --patch"
 # status
 alias gs="git status"
+alias gs.="git status ."
 alias gss="git status -s"                    # short
 alias gsto="git status --untracked-files=no" # tracked only
 # differences
