@@ -8,7 +8,11 @@ export VIMINIT='let $MYVIMRC="$HOME/.config/vim/vimrc" | source $MYVIMRC'
 
 # zsh
 export ZDOTDIR="$HOME/.config/zsh"      # Location of zsh configs
-export HISTFILE="$ZDOTDIR/.zsh_history" # History filepath
+ZSHSTATE="$HOME/.local/state/zsh"
+if [[ ! -d $ZSHSTATE ]]; then
+    command mkdir -p $ZSHSTATE
+fi
+export HISTFILE="$ZSHSTATE/zsh_history" # History filepath
 export HISTSIZE=2000                    # Maximum events for internal history
 export SAVEHIST=2000                    # Maximum events in history file
 export DIRSTACKSIZE=9                   # Maximum size of directory stack
