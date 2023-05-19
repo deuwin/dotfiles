@@ -23,20 +23,17 @@ export DIRSTACKSIZE=9                   # Maximum size of directory stack
 #     of madness...
 #     https://felipec.wordpress.com/2021/06/05/adventures-with-man-color/
 #     https://wiki.archlinux.org/title/Color_output_in_console#less
-LESS="--quit-if-one-screen "    # just display output if it fits on screen
-LESS+="--ignore-case "          # smart case search
-LESS+="--incsearch "            # search as you type
-LESS+="--jump-target=.5 "       # current search result in middle of screen
-LESS+="--LONG-PROMPT "          # more info on status line
-LESS+="--RAW-CONTROL-CHARS "    # interpret colour control codes
-LESS+="--squeeze-blank-lines "  # merge multiple blank lines
-LESS+="--tabs=4 "               # 4 spaces for tabs
-LESS+="--no-init "              # ignore termcap initialisation, in xterm this
-                                # keeps last page on screen see:
-                                # http://www.shallowsky.com/linux/noaltscreen.html
-LESS+="--mouse "                # mouse support
-LESS+="--wheel-lines=3 "        # mouse scroll speed
-LESS+="--hilite-search "        # only highlight last result from search
+LESS="--quit-if-one-screen "   # just display output if it fits on screen
+LESS+="--ignore-case "         # smart case search
+LESS+="--incsearch "           # search as you type
+LESS+="--jump-target=.5 "      # current search result in middle of screen
+LESS+="--LONG-PROMPT "         # more info on status line
+LESS+="--RAW-CONTROL-CHARS "   # interpret colour control codes
+LESS+="--squeeze-blank-lines " # merge multiple blank lines
+LESS+="--tabs=4 "              # 4 spaces for tabs
+LESS+="--mouse "               # mouse support
+LESS+="--wheel-lines=3 "       # mouse scroll speed
+LESS+="--hilite-search "       # only highlight last result from search
 export LESS
 export LESSHISTFILE="$HOME/.local/state/lesshst"
 export LESSKEYIN="$HOME/.config/lesskey"
