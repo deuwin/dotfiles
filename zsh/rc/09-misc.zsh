@@ -25,6 +25,10 @@ for s in "$scripts[@]"; do
 done
 unset script_dir scripts s
 
-# Unfunction rc helpers 
+# Clean up is_command and log any commands not found
+if ((${#command_missing} > 0)); then
+    _impure_warning "Command(s) not found: ${(j:, :)command_missing}"
+fi
+unset command_missing
 unfunction is_command
 

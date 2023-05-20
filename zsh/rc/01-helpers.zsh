@@ -1,8 +1,14 @@
 ####
 # Generic Helpers
 #
+typeset -a command_missing
 is_command() {
-    command -v $1 > /dev/null
+    if ! command -v $1 > /dev/null; then
+        command_missing+=($1)
+        false
+    else
+        true
+    fi
 }
 
 
