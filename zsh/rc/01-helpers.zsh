@@ -1,7 +1,7 @@
 ####
 # Generic Helpers
 #
-typeset -a command_missing
+typeset -aU command_missing
 is_command() {
     if ! command -v $1 > /dev/null; then
         command_missing+=($1)
