@@ -56,6 +56,7 @@ alias gss="git status -s"                    # short
 alias gsto="git status --untracked-files=no" # tracked only
 # differences
 alias gd="git diff"
+alias gd.="git diff ."
 alias gds="git diff --staged" # changes between staged and HEAD
 alias gdh="git diff HEAD"     # changes between unstaged and HEAD
 alias gdp="git --no-pager diff"           # w/o delta
