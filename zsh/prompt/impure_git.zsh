@@ -161,9 +161,9 @@ _impure_git_get_extra_info() {
     msg+=$(_impure_git_append ${_ig_symbols[behind]} ${ahead_behind[2]})
     msg+=$(_impure_git_append ${_ig_symbols[ahead]} ${ahead_behind[1]})
 
-    # staged - renamed files count as a staged change
+    # staged - renamed and deleted files count as a staged change
     local count
-    count=$(grep --count -E "^(A  )|(R  )|(M. )" <<< $git_status)
+    count=$(grep --count -E "^(A  )|(R  )|(M. )|(D  )" <<< $git_status)
     msg+=$(_impure_git_append ${_ig_symbols[staged]} $count)
 
     # unstaged
@@ -171,7 +171,7 @@ _impure_git_get_extra_info() {
     msg+=$(_impure_git_append ${_ig_symbols[unstaged]} $count)
 
     # deleted - counts deletions in staged and unstaged
-    count=$(grep --count "^\( D \)\|\(D  \)" <<< $git_status)
+    count=$(grep --count -E "^( D )" <<< $git_status)
     msg+=$(_impure_git_append ${_ig_symbols[deleted]} $count)
 
     # stashed
