@@ -8,3 +8,23 @@ First saw this
 Didn't care for the emojis, but did want the occasional piece of Unicode to
 render well.
 
+## Editing and Testing
+You might want to specify a particular font before falling back to something
+generically monospace. To list available monospace fonts:
+
+```shell
+fc-list :mono | awk -F: '{print $2}' | sort | uniq
+```
+
+After making changes to `fonts.conf` you need to:
+  1. Run this command:
+
+      ```shell
+      sudo fc-cache -fr
+      ```
+
+  2. Restart your terminal program.
+
+The previous command will erase existing cache files and regenerate new cache
+files.
+
