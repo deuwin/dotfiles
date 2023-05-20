@@ -62,29 +62,31 @@ if $_IMPURE_LOGGING; then
         (_impure_rotate_logs)
 
         _impure_log() {
-            local level="$1" msg="$2"
+            local level="$1" msg="$2" caller
+            if [[ -n "$3" ]]; then
+                caller="$3"
+            else
+                caller="${funcstack[3]:t}"
+            fi
             # In subshell, for automatic release of lock
             (
                 [[ -f $_IMPURE_LOGFILE ]] && zsystem flock $_IMPURE_LOGFILE
-                print -P "[%D{%F %T.%.}]" \
-                    "[$level]" \
-                    "$TTY:" \
-                    "$funcstack[-1]" \
-                    "\"$msg\"" >>| "$_IMPURE_LOGFILE"
+                print -P "[%D{%F %T.%.}][$level] $TTY:" \
+                    "$caller" "\"$msg\"" >>| "$_IMPURE_LOGFILE"
             )
         }
 
         _impure_error() {
-            _impure_log "Error" "$1"
+            _impure_log "Error" "$1" "$2"
         }
         _impure_warning() {
-            _impure_log "Warn " "$1"
+            _impure_log "Warn " "$1" "$2"
         }
         _impure_info() {
-            _impure_log "Info " "$1"
+            _impure_log "Info " "$1" "$2"
         }
         _impure_debug() {
-            _impure_log "Debug" "$1"
+            _impure_log "Debug" "$1" "$2"
         }
     else
         _impure_error() {

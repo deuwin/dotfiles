@@ -11,7 +11,7 @@ zmodload zsh/datetime
 _zshrc_reload_log() {
     print -P "    $1"
     local zero_len='%([BSUbfksu]|([FB]|){*})'
-    _impure_info "${(S%)1//$~zero_len/}"
+    _impure_info "${(S%)1//$~zero_len/}" "$funcstack[-1]"
 }
 
 
