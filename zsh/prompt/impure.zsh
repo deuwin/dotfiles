@@ -48,7 +48,9 @@ _impure_generate_prompt() {
     ps1+='%F{white}:%F{blue}%(4c:…/:)%3~'
 
     # git info
-    ps1+="$_impure_git_prompt"
+    if ! $_IMPURE_GIT_INFO_RPROMPT; then
+        ps1+="$_impure_git_prompt"
+    fi
 
     # background jobs
     ps1+='%(1j. %F{cyan}✦%j.)'
@@ -97,7 +99,9 @@ _impure_setup() {
     add-zsh-hook preexec _impure_preexec
 
     PROMPT='$(_impure_generate_prompt)'
-    RPROMPT='$(_impure_generate_rprompt)'
+    if $_IMPURE_GIT_INFO_RPROMPT; then
+        RPROMPT='$(_impure_generate_rprompt)'
+    fi
 }
 
 source $ZDOTDIR/prompt/impure_git.zsh

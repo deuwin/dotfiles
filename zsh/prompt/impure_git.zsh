@@ -78,9 +78,8 @@ _impure_git_append() {
     _impure_git_append $@
 }
 
-typeset -g _impure_git_prompt
-typeset -g _impure_git_rprompt
 if $_IMPURE_GIT_INFO_RPROMPT; then
+    typeset -g _impure_git_rprompt
     _impure_git_render_info() {
         if [ -z $1 ]; then
             _impure_git_rprompt=""
@@ -98,6 +97,7 @@ if $_IMPURE_GIT_INFO_RPROMPT; then
         _impure_git_rprompt+="${_ig_formats[bracket]}]"
     }
 else
+    typeset -g _impure_git_prompt
     _impure_git_render_info() {
         _impure_git_prompt=""
         if [ -z $1 ]; then
