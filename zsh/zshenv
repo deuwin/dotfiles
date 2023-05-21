@@ -16,6 +16,8 @@ export HISTFILE="$ZSHSTATE/zsh_history" # History filepath
 export HISTSIZE=3000                    # Maximum events for internal history
 export SAVEHIST=3000                    # Maximum events in history file
 export DIRSTACKSIZE=9                   # Maximum size of directory stack
+export KEYTIMEOUT=50                    # Wait time between multicharacter
+                                        # keybinds (hundredths of seconds)
 
 # less
 #   - set here so man also uses these settings
