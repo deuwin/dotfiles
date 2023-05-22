@@ -15,7 +15,11 @@ is_command() {
 ####
 # Logging
 #
-_IMPURE_LOGGING=true
+if [[ $ZSH_EXECUTION_STRING == "exit 42" ]]; then
+    _IMPURE_LOGGING=false
+else
+    _IMPURE_LOGGING=true
+fi
 _IMPURE_LOGDIR="$HOME/.local/state/impure/logs"
 _IMPURE_LOGFILE="$_IMPURE_LOGDIR/impure.log"
 _IMPURE_LAST_ROTATE="$_IMPURE_LOGDIR/last_rotate"
