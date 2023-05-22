@@ -116,6 +116,23 @@ if is_command nala; then
     alias apt="echo 'Don\'t you mean nala?'"
     alias apt-get="apt"
 fi
+if is_command fzf; then
+    fman() {
+        typeset -la preview=(
+            "echo {} | tr --delete '()' | "
+            "awk '{printf \"%s \", \$2} {print \$1}' | "
+            "xargs --no-run-if-empty man"
+        )
+        man --apropos . | \
+            fzf --nth="1,2" \
+                --layout=reverse \
+                --prompt="man> " \
+                --preview="$preview" | \
+            tr --delete '()' | \
+            awk '{printf "%s ", $2} {print $1}' | \
+            xargs --no-run-if-empty man
+    }
+fi
 
 
 ####
