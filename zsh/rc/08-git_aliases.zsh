@@ -243,9 +243,11 @@ else
         local gshow="git show --color=always"
         local dfmt=""
         local p_pos=""
-        # let's assume a font character is roughly twice as tall as it is wide
-        if ((LINES * 2 > COLUMNS)); then
+        local p_change="--bind=ctrl-/:change-preview-window(top,50%|hidden|)"
+        # Inconsolata is roughly 0.44 with my current terminal/screen/etc...
+        if ((LINES > COLUMNS * 0.4)); then
             p_pos="--preview-window=top:wrap"
+            p_change="--bind=ctrl-/:change-preview-window(right,50%|hidden|)"
         fi
         if command -v delta > /dev/null; then
             local lopts="--RAW-CONTROL-CHARS -+--quit-if-one-screen"
@@ -255,6 +257,7 @@ else
         git log --graph --format=$gfmt --color=always "$@" |
             fzf --layout=reverse --ansi --no-sort \
                 $p_pos \
+                $p_change \
                 --preview "echo {} | grep --only-matching '[a-f0-9]\{7\}' |
                            head -1 | xargs -I@ sh -c '$gshow @ $dfmt'" \
                 --bind "enter:execute:(
