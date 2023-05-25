@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 # Inspired by/stolen from:
 # https://github.com/davidde/git
 # https://github.com/junegunn/fzf/wiki/examples#git
@@ -167,13 +169,9 @@ _git_show_stash_file() {
 }
 
 _list_git_aliases() {
-    local git_aliases=${BASH_SOURCE[0]:-${(%):-%x}}
-    if [ -z "$git_aliases" ]; then
-        echo "Sorry, I was bit lazy with this cross-shell compatibility..."
-        return
-    fi
-
-    local line lalias long aliases
+    # see man zshmisc
+    local git_aliases=${(%):-%x}
+    local line
     {
         while IFS= read -r line; do
             [ "$line" = "## help" ] && break
@@ -195,10 +193,8 @@ _list_git_aliases() {
                     printf "%s\n" "${line##\# }"
                     ;;
                 "alias"*)
-                    lalias="${line%%\=*}"
-                    long="${line##*\=\"}"
                     printf "    \e[32m%-10s\e[39m%s\n" \
-                        "${lalias:6}" "${long%\"*}"
+                        "${${line%%\=*}:6}" "${${line##*\=\"}%\"*}"
                     ;;
                 "    "*|[g}_]*)
                     printf "    %s\n" "$line"
