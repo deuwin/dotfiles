@@ -117,6 +117,7 @@ if is_command nala; then
     alias apt-get="apt"
 fi
 if is_command fzf; then
+    export FZF_DEFAULT_OPTS="--layout=reverse --color=border:245"
     fman() {
         typeset -la preview=(
             "echo {} | tr --delete '()' | "
@@ -125,7 +126,6 @@ if is_command fzf; then
         )
         man --apropos . | \
             fzf --nth="1,2" \
-                --layout=reverse \
                 --prompt="man> " \
                 --preview="$preview" | \
             tr --delete '()' | \

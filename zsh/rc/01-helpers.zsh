@@ -11,6 +11,10 @@ is_command() {
     fi
 }
 
+is_function() {
+    typeset -f "$1" > /dev/null
+}
+
 
 ####
 # Logging
