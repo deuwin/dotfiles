@@ -39,6 +39,8 @@ LESS+="--hilite-search "       # only highlight last result from search
 export LESS
 export LESSHISTFILE="$HOME/.local/state/lesshst"
 export LESSKEYIN="$HOME/.config/lesskey"
+export LESSOPEN="| lesspipe.sh %s"
+export LESSCLOSE="lesspipe.sh %s %s"
 
 # PATH
 # https://zsh.sourceforge.io/Guide/zshguide02.html#l24
