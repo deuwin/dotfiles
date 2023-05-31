@@ -41,8 +41,8 @@ set promptfmt "\033[38;5;247m%u\033[37m@\033[32m%h\033[0m:\033[34m%d\033[0m%f\03
 # truncate long filenames with ellipsis
 set truncatechar …
 
-# ensure pager has colour and won't automatically close
-map i $less --RAW-CONTROL-CHARS -+--quit-if-one-screen "$f"
+# ensure pager has colour, won't automatically close, and prints from top
+map i $less --RAW-CONTROL-CHARS -+--quit-if-one-screen --clear-screen "$f"
 
 # preview using lesspipe.sh
 set previewer ~/.config/lf/pv.sh
