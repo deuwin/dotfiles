@@ -251,7 +251,7 @@ else
         fi
 
         git log --graph --format=$gfmt --color=always "$@" |
-            fzf --layout=reverse --ansi --no-sort \
+            fzf --layout=reverse --ansi --no-sort --exact \
                 $p_pos \
                 $p_change \
                 --preview "echo {} | grep --only-matching '[a-f0-9]\{7\}' |
