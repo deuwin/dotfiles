@@ -15,6 +15,8 @@
 #
 # e.g. use `~my_dir` to get to my_directory
 # hash -d my_dir=/path/to/my_directory
+hash -d zdd=$ZDOTDIR
+hash -d zrc=$ZDOTDIR/rc
 
 
 ####
@@ -32,6 +34,12 @@ alias ea="$EDITOR $ZDOTDIR/rc/07-aliases.zsh"
 alias et="$EDITOR $HOME/.config/tmux/tmux.conf"
 alias ev="$EDITOR $HOME/.config/vim/vimrc"
 alias sc="exec zsh"
+
+
+####
+# Impure Specific
+#
+alias impure-log="tail -F $_IMPURE_LOGFILE"
 
 
 ####
