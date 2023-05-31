@@ -91,6 +91,23 @@ alias rd="rmdir"
 alias ln="ln --verbose --interactive"
 alias chown="chown --verbose"
 alias chmod="chmod --verbose"
+if is_command lf; then
+    # https://github.com/gokcehan/lf/blob/master/etc/lfcd.sh
+    lf() {
+        local tmp="$(mktemp)"
+        # `command` is needed in case `lfcd` is aliased to `lf`
+        command lf -last-dir-path="$tmp" "$@"
+        if [ -f "$tmp" ]; then
+            local dir="$(cat "$tmp")"
+            command rm -f "$tmp"
+            if [ -d "$dir" ]; then
+                if [ "$dir" != "$(pwd)" ]; then
+                    cd "$dir"
+                fi
+            fi
+        fi
+    }
+fi
 
 
 ####
