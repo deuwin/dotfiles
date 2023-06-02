@@ -2,7 +2,7 @@ user: 249
 group: 187
 permission:
   read: dark_green
-  write: dark_yellow
+  write: 215
   exec: dark_red
   exec-sticky: 5
   no-access: 245
