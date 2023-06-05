@@ -12,15 +12,28 @@ height="$3"
 h_pos="$4"
 v_pos="$5"
 
-mime_type=$(file --mime-type --brief --dereference $1)
+mime_type=$(file --mime-type --brief --dereference "$file")
 file_type=${mime_type%/*}
 
 is_command() {
     command -v "$1" > /dev/null
 }
 
-print_mediainfo() {
-    echo ""
+draw_image() {
+    if is_command tiv; then
+        if is_command convert; then
+            local temp_file="$(mktemp)"
+            convert "${file}[0]" -sample 960x540\> "$temp_file"
+            tiv -h $((height / 2)) -w "$width" "$temp_file"
+            rm "$temp_file"
+        else
+            tiv -h $((height / 2)) -w "$width" "$file"
+        fi
+        echo ""
+    fi
+}
+
+print_info() {
     if is_command mediainfo; then
         mediainfo "$file" | tail --lines=+3
     else
@@ -30,13 +43,11 @@ print_mediainfo() {
 
 case "$file_type" in
     image)
-        if is_command tiv; then
-            tiv -h $((height / 2)) -w "$width" "$file"
-        fi
-        print_mediainfo
+        draw_image
+        print_info
         ;;
     video)
-        print_mediainfo
+        print_info
         ;;
     *)
         LESSQUIET=1 less --RAW-CONTROL-CHARS -+--quit-if-one-screen "$file"
