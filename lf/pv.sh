@@ -20,15 +20,8 @@ is_command() {
 }
 
 draw_image() {
-    if is_command tiv; then
-        if is_command convert; then
-            local temp_file="$(mktemp)"
-            convert "${file}[0]" -sample 960x540\> "$temp_file"
-            tiv -h $((height / 2)) -w "$width" "$temp_file"
-            rm "$temp_file"
-        else
-            tiv -h $((height / 2)) -w "$width" "$file"
-        fi
+    if is_command chafa; then
+        chafa --size=${width}x$((height/2)) --animate=false "$file"
         echo ""
     fi
 }
