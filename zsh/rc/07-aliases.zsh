@@ -20,13 +20,6 @@ hash -d zrc=$ZDOTDIR/rc
 
 
 ####
-# sudo
-# enable aliases to be sudo’ed
-#
-alias sudo="sudo "
-
-
-####
 # Edit and Source Configs
 #
 alias ec="$EDITOR $ZDOTDIR/zshrc"
@@ -34,12 +27,20 @@ alias ea="$EDITOR $ZDOTDIR/rc/07-aliases.zsh"
 alias et="$EDITOR $HOME/.config/tmux/tmux.conf"
 alias ev="$EDITOR $HOME/.config/vim/vimrc"
 alias sc="exec zsh"
+alias zrf="touch $ZDOTDIR/zshrc"
 
 
 ####
 # Impure Specific
 #
 alias impure-log="tail -F $_IMPURE_LOGFILE"
+
+
+####
+# sudo
+# enable aliases to be sudo’ed
+#
+alias sudo="sudo "
 
 
 ####
@@ -103,7 +104,6 @@ if is_command lf; then
     # https://github.com/gokcehan/lf/blob/master/etc/lfcd.sh
     lf() {
         local tmp="$(mktemp)"
-        # `command` is needed in case `lfcd` is aliased to `lf`
         command lf -last-dir-path="$tmp" "$@"
         if [ -f "$tmp" ]; then
             local dir="$(cat "$tmp")"
