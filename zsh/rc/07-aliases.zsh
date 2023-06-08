@@ -143,6 +143,8 @@ if is_command nala; then
 fi
 if is_command fzf; then
     export FZF_DEFAULT_OPTS="--layout=reverse --color=border:245"
+    # https://github.com/junegunn/fzf/wiki/Examples
+    # fman: Fuzzy search manpage titles
     fman() {
         typeset -la preview=(
             "echo {} | tr --delete '()' | "
@@ -156,6 +158,20 @@ if is_command fzf; then
             tr --delete '()' | \
             awk '{printf "%s ", $2} {print $1}' | \
             xargs --no-run-if-empty man
+    }
+    # killf: Fuzzy search processes to kill
+    killf() {
+        local pid
+        if [ "$UID" != "0" ]; then
+            pid=$(ps -f -u $UID | sed 1d | fzf --multi | awk '{print $2}')
+        else
+            pid=$(ps -ef | sed 1d | fzf --multi | awk '{print $2}')
+        fi
+
+        if [ "x$pid" != "x" ]
+        then
+            echo $pid | xargs kill -${1:-9}
+        fi
     }
 fi
 
@@ -193,6 +209,27 @@ if is_command rg; then
             command rg --smart-case --pretty $@
         fi
     }
+
+    if is_command fzf && is_command bat; then
+        # from https://github.com/junegunn/fzf/blob/master/ADVANCED.md
+        rf() {
+            local rg_prefix initial_query="${*:-}" alt_enter
+            printf -v rg_prefix '%s' "rg --column --line-number --no-heading " \
+                "--color=always --smart-case "
+            printf -v alt_enter '%s' "alt-enter:unbind(change,alt-enter)" \
+                "+change-prompt(2. fzf> )+enable-search+clear-query"
+            : | fzf --ansi --disabled --query "$initial_query" \
+                --bind "start:reload:$rg_prefix {q}" \
+                --bind "change:reload:sleep 0.1; $rg_prefix {q} || true" \
+                --bind $alt_enter \
+                --color "hl:-1:underline,hl+:-1:underline:reverse" \
+                --prompt '1. ripgrep> ' \
+                --delimiter : \
+                --preview 'bat --color=always {1} --highlight-line {2}' \
+                --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
+                --bind 'enter:become(vim {1} +{2})'
+        }
+    fi
 fi
 if is_command ack; then
     alias ack="ack --smart-case --pager=less"
