@@ -22,7 +22,6 @@ zstyle -e ":autocomplete:*" list-lines "reply=( $((LINES / 3)) )"
 # <enter>: execute selected item from menu
 bindkey -M menuselect '\r' .accept-line
 
-
 # autosuggestions
 # https://github.com/zsh-users/zsh-autosuggestions
 source $ZDOTDIR/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
