@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 ####
 # Generic Helpers
 #
@@ -13,6 +15,16 @@ is_command() {
 
 is_function() {
     typeset -f "$1" > /dev/null
+}
+
+# is version greater than
+is_version_gt() {
+    local target="$1" current="$2"
+    if [ -z $target ] || [ -z $current ]; then
+        print "You must supply two version strings!"
+        return 2
+    fi
+    print "$target\n$current" | sort --version-sort --check=quiet
 }
 
 

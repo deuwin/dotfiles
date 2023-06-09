@@ -131,16 +131,26 @@ _yolo() {
 
 ## functions
 # pretty formatting
-pformat=$(printf "%s" \
-    "%C(auto)%H %d%n" \
-    "%C(default)📅 %ah · 🖉  %an · ﹫ %ae" \
-    "%n%n" \
-    "%w(80,4,4)%C(white)%s%n" \
-    "%C(default)%-b")
+if is_version_gt "2.35.0" $(git --version | awk '{print $3}'); then
+    pformat=$(printf "%s" \
+        "%C(auto)%H %d%n" \
+        "%C(default)📅 %ah · 🖉  %an · ﹫ %ae" \
+        "%n%n" \
+        "%w(80,4,4)%C(white)%s%n" \
+        "%C(default)%-b")
+    pformat_oneline="%C(auto)%h %C(default)%s%C(auto)%d"
+else
+    pformat=$(printf "%s" \
+        "%C(auto)%H %d%n" \
+        "📅 %ah · 🖉  %an · ﹫ %ae" \
+        "%n%n" \
+        "%w(80,4,4)%C(white)%s%n" \
+        "%b")
+    pformat_oneline="%h %s%d"
+fi
 alias glog="git log --color=auto --pretty=format:'${pformat}'"
-unset pformat
 # just like `git log --oneline` but tags, etc. after the commit subject
-alias glog-oneline="git log --pretty=format:'%C(auto)%h %C(default)%s%C(auto)%d'"
+alias glog-oneline="git log --pretty=format:'${pformat_oneline}'"
 
 # Locate all commits in which a string was first introduced
 _git_locate_string() {
@@ -262,3 +272,5 @@ else
                         ) <<< {}"
     }
 fi
+
+unset pformat pformat_oneline
