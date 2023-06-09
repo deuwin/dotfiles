@@ -287,3 +287,4 @@ alias -g GE="| noglob grep --color=auto -E"
 #
 is_command cmatrix && alias cmatrix="cmatrix -baC blue"
 alias party-time="curl parrot.live"
+is_command mpv && alias mpvt="mpv --vo=tct"
