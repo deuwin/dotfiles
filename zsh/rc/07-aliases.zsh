@@ -159,8 +159,8 @@ if is_command fzf; then
             awk '{printf "%s ", $2} {print $1}' | \
             xargs --no-run-if-empty man
     }
-    # killf: Fuzzy search processes to kill
-    killf() {
+    # fkill: Fuzzy search processes to kill
+    fkill() {
         local pid
         if [ "$UID" != "0" ]; then
             pid=$(ps -f -u $UID | sed 1d | fzf --multi | awk '{print $2}')
