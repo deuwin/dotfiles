@@ -48,9 +48,9 @@ alias gbdorigin="git push origin --delete" # delete remote branch
 ## check stuff
 alias gsh="git show"
 # commits
-alias gl="glog --name-status" # see below for glog define
-alias glo="glog-oneline"
-alias glp="glog --patch"
+alias gl="git log --name-status"
+alias glo="git log --pretty=one-line"
+alias glp="git log --patch"
 # status
 alias gs="git status"
 alias gs.="git status ."
@@ -131,26 +131,30 @@ _yolo() {
 
 ## functions
 # pretty formatting
-if is_version_gt "2.35.0" $(git --version | awk '{print $3}'); then
-    pformat=$(printf "%s" \
-        "%C(auto)%H %d%n" \
-        "%C(default)📅 %ah · 🖉  %an · ﹫ %ae" \
-        "%n%n" \
-        "%w(80,4,4)%C(white)%s%n" \
-        "%C(default)%-b")
-    pformat_oneline="%C(auto)%h %C(default)%s%C(auto)%d"
-else
-    pformat=$(printf "%s" \
-        "%C(auto)%H %d%n" \
-        "📅 %ah · 🖉  %an · ﹫ %ae" \
-        "%n%n" \
-        "%w(80,4,4)%C(white)%s%n" \
-        "%b")
-    pformat_oneline="%h %s%d"
+if ! git config --get format.pretty > /dev/null; then
+    if is_version_gt "2.35.0" $(git --version | awk '{print $3}'); then
+        pretty=$(printf "%s" \
+            "%C(auto)%H %d%n" \
+            "%C(default)📅 %ah · 🖉  %an · ﹫ %ae" \
+            "%n%n" \
+            "%w(80,4,4)%C(white)%s" \
+            "%C(default)%n% b")
+        oneline="%C(auto)%h %C(default)%s%C(auto)%d"
+    else
+        pretty=$(printf "%s" \
+            "%C(auto)%H %d%n" \
+            "📅 %ah · 🖉  %an · ﹫ %ae" \
+            "%n%n" \
+            "%w(80,4,4)%C(white)%s" \
+            "%C(auto)%n% b")
+        oneline="%C(auto)%h %s%d"
+    fi
+    git config --global format.pretty "format:$pretty"
+    # just like `git log --oneline` but tags, etc. after the commit subject
+    # can't override built-in aliases so we'll use one-line
+    git config --global pretty.one-line "format:$oneline"
+    unset oneline pretty
 fi
-alias glog="git log --color=auto --pretty=format:'${pformat}'"
-# just like `git log --oneline` but tags, etc. after the commit subject
-alias glog-oneline="git log --pretty=format:'${pformat_oneline}'"
 
 # Locate all commits in which a string was first introduced
 _git_locate_string() {
@@ -244,33 +248,34 @@ if ! is_command fzf; then
         return 1
     }
 else
+    compdef _files _fzf_commit_browser
     _fzf_commit_browser() {
-        local gfmt="%C(auto)%h %s%d"
-        local gshow="git show --color=always"
-        local dfmt=""
         local p_pos=""
         local p_change="--bind=ctrl-/:change-preview-window(top,50%|hidden|)"
         # Inconsolata is roughly 0.44 with my current terminal/screen/etc...
         if ((LINES > COLUMNS * 0.4)); then
-            p_pos="--preview-window=top:wrap"
+            p_pos="--preview-window=top"
             p_change="--bind=ctrl-/:change-preview-window(right,50%|hidden|)"
         fi
+
+        local preview=$(printf '%s' \
+            "echo {} | grep --only-matching '[a-f0-9]\{7\}' |" \
+            "head -1 | xargs git show --color=always")
+        local lopts="--RAW-CONTROL-CHARS -+--quit-if-one-screen --clear-screen"
+        local bind=$preview
         if command -v delta > /dev/null; then
-            local lopts="--RAW-CONTROL-CHARS -+--quit-if-one-screen"
-            dfmt="| delta --paging always --pager \"less $lopts\""
+            preview+="| delta"
+            bind+="| delta --paging always --pager \"less $lopts\""
+        else
+            bind+="| less $lopts"
         fi
 
-        git log --graph --format=$gfmt --color=always "$@" |
-            fzf --layout=reverse --ansi --no-sort --exact \
+        git log --graph --format=one-line --color=always "$@" |
+            fzf --ansi --no-sort --exact \
+                --preview $preview \
+                --bind "enter:execute:$bind" \
                 $p_pos \
-                $p_change \
-                --preview "echo {} | grep --only-matching '[a-f0-9]\{7\}' |
-                           head -1 | xargs -I@ sh -c '$gshow @ $dfmt'" \
-                --bind "enter:execute:(
-                            grep --only-matching '[a-f0-9]\{7\}' | head -1 |
-                                xargs -I % sh -c '$gshow % $dfmt'
-                        ) <<< {}"
+                $p_change
     }
 fi
 
-unset pformat pformat_oneline
