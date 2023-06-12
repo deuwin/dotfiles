@@ -1,3 +1,4 @@
+#!/use/bin/env zsh
 ####
 # Aliases and Shell Functions
 #
@@ -168,9 +169,17 @@ if is_command fzf; then
             pid=$(ps -ef | sed 1d | fzf --multi | awk '{print $2}')
         fi
 
-        if [ "x$pid" != "x" ]
-        then
-            echo $pid | xargs kill -${1:-9}
+        if [ -n $pid ]; then
+            local cmd="\"$(ps --pid $pid --format args=)\""
+            local prompt="Do you want to kill $cmd? [N/y] "
+            local confirm=""
+            read -q "confirm?$prompt"
+            if [ $confirm = "y" ]; then
+                print "\nKilling [$pid] $cmd..."
+                echo $pid | xargs kill -${1:-9}
+            else
+                print "Cancelling..."
+            fi
         fi
     }
 fi
