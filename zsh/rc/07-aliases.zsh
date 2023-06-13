@@ -232,11 +232,11 @@ if is_command rg; then
                 --bind "change:reload:sleep 0.1; $rg_prefix {q} || true" \
                 --bind $alt_enter \
                 --color "hl:-1:underline,hl+:-1:underline:reverse" \
-                --prompt '1. ripgrep> ' \
+                --prompt "1. ripgrep> " \
                 --delimiter : \
-                --preview 'bat --color=always {1} --highlight-line {2}' \
-                --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
-                --bind 'enter:become(vim {1} +{2})'
+                --preview "bat --color=always {1} --highlight-line {2}" \
+                --preview-window "up,60%,border-bottom,+{2}+3/3,~3" \
+                --bind "enter:become(vim {1} +{2})"
         }
     fi
 fi
