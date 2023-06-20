@@ -1,0 +1,95 @@
+General;"
+General
+Filename:%CompleteName%
+Title:%Title%
+Artist:%Performer%
+Track:%Track/Position%
+Album:%Album%
+Genre:%Genre%
+Cover:%Cover%
+Size:%FileSize/String3%
+Overall Bitrate:%OverallBitRate/String%
+Frame Rate:%FrameRate/String%
+Format:%Format%
+Format Version:%Format_Version%
+Duration:%Duration/String2%
+Video Codecs:%Video_Format_WithHint_List%
+Audio Codecs:%Audio_Format_WithHint_List%
+Text Codecs:%Text_Format_WithHint_List%
+Video Count:%VideoCount%
+Audio Count:%AudioCount%
+Text Count:%TextCount%\n"
+
+Video;"
+Video %StreamKindPos%
+ID:%ID/String%
+Format:%Format_Commercial% %Format/Info%
+Resolution:%Width%x%Height%
+Aspect Ratio:%DisplayAspectRatio/String%
+Codec:%Codec/String%%Format_Profile%
+Codec ID:%CodecID%
+Duration:%Duration/String2%
+Bit Rate:%BitRate/String%
+Max Bit Rate:%BitRate_Maximum/String%
+Bit Depth:%BitDepth/String%
+Frame Rate:%FrameRate% FPS
+Frame Rate Mode:%FrameRate_Mode/String%
+Encoding Library:%Encoded_Library_Name%"\n
+
+Audio;"
+Audio %StreamKindPos%
+ID:%ID/String%
+Audio:%Language/String%
+Format:%Format_Commercial% %Format/Info%
+Duration:%Duration/String2%
+Sample Rate:%SamplingRate/String%
+Bit Rate:%BitRate/String%
+Bit Rate Mode:%BitRate_Mode/String%
+Channel Layout:%ChannelPositions%
+Channels:%Channel(s)/String%"\n
+
+Text;"
+Subtitle %StreamKindPos%
+ID:%ID%
+Stream Kind:%StreamKind/String%
+Format:%Format_Commercial% %Format/Info%
+Codec ID:%CodecID%
+Default:%Default%
+Forced:%Forced%
+Language:%Language/String%\n"
+
+Image;"
+Image %StreamKindPos%
+ID:%ID/String%
+Title:%Title%
+Resolution:%Width%x%Height%
+Format:%Format_Commercial% %Format/Info%
+Format Version:%Format_Version%
+Format Profile:%Format_Profile%
+Format Settings_Packing:%Format_Settings_Packing%
+Format Compression:%Format_Compression%
+Compression Mode:%Compression_Mode/String%
+Compression Ratio:%Compression_Ratio%
+Format Settings:%Format_Settings%
+Format Settings Wrapping:%Format_Settings_Wrapping%
+Format AdditionalFeatures:%Format_AdditionalFeatures%
+CodecID:%CodecID%
+CodecID/String:%CodecID/String%
+CodecID/Info:%CodecID/Info%
+CodecID/Hint:%CodecID/Hint%
+CodecID/Url:%CodecID/Url%
+CodecID Description:%CodecID_Description%
+Colour Space:%ColorSpace%
+Chroma Subsampling:%ChromaSubsampling%
+Bit Depth:%BitDepth/String%
+AlternateGroup:%AlternateGroup%
+AlternateGroup/String:%AlternateGroup/String%
+colour_description_present:%colour_description_present%
+colour_primaries:%colour_primaries%
+transfer_characteristics:%transfer_characteristics%
+matrix_coefficients:%matrix_coefficients%
+colour_description_present_Original:%colour_description_present_Original%
+colour_primaries_Original:%colour_primaries_Original%
+transfer_characteristics_Original:%transfer_characteristics_Original%
+matrix_coefficients_Original:%matrix_coefficients_Original%\n"
+
