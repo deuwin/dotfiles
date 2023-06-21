@@ -97,7 +97,6 @@ alias rm="rm --interactive=once --verbose"
 alias mkdir="mkdir --verbose"
 alias md="mkdir -p"
 alias rmdir="rmdir --verbose"
-alias rd="rmdir"
 alias ln="ln --verbose --interactive"
 alias chown="chown --verbose"
 alias chmod="chmod --verbose"
@@ -117,6 +116,11 @@ if is_command lf; then
         fi
     }
 fi
+rd() {
+    if ! rmdir "$1" && [ -d "$1" ]; then
+        rm --interactive=once --recursive "$1"
+    fi
+}
 
 
 ####
