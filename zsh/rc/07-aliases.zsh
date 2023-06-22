@@ -156,8 +156,10 @@ if is_command fzf; then
             "awk '{printf \"%s \", \$2} {print \$1}' | "
             "xargs --no-run-if-empty man"
         )
+        local query="${*:-}"
         man --apropos . | \
-            fzf --nth="1,2" \
+            fzf --query "$query" \
+                --nth="1,2" \
                 --prompt="man> " \
                 --preview="$preview" | \
             tr --delete '()' | \
