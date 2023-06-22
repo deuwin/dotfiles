@@ -1,0 +1,12 @@
+# This is `bat`s configuration file. Each line either contains a comment or
+# a command-line option that you want to pass to `bat` by default. You can
+# run `bat --help` to get a list of all possible configuration options.
+
+# Highlighting theme. Run `bat --list-themes` for list
+# Run `bat --list-themes | fzf --preview="bat --theme={} --color=always path/to/file`
+# for previewing selected file with various themes
+--theme="sono-lie"
+
+# Enable this to use italic text on the terminal. This is not supported on all
+# terminal emulators (like tmux, by default):
+--italic-text=always
