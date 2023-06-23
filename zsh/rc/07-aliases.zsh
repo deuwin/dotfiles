@@ -151,7 +151,7 @@ if is_command fzf; then
     # https://github.com/junegunn/fzf/wiki/Examples
     # fman: Fuzzy search manpage titles
     fman() {
-        typeset -la preview=(
+        typeset -la view=(
             "echo {} | tr --delete '()' | "
             "awk '{printf \"%s \", \$2} {print \$1}' | "
             "xargs --no-run-if-empty man"
@@ -161,11 +161,10 @@ if is_command fzf; then
             fzf --query "$query" \
                 --nth="1,2" \
                 --prompt="man> " \
-                --preview="$preview" | \
-            tr --delete '()' | \
-            awk '{printf "%s ", $2} {print $1}' | \
-            xargs --no-run-if-empty man
+                --preview="$view" \
+                --bind "enter:execute:$view"
     }
+
     # fkill: Fuzzy search processes to kill
     fkill() {
         local pid
