@@ -250,14 +250,7 @@ if ! is_command fzf; then
 else
     compdef _files _fzf_commit_browser
     _fzf_commit_browser() {
-        local p_pos=""
-        local p_change="--bind=ctrl-/:change-preview-window(top,50%|hidden|)"
-        # Inconsolata is roughly 0.44 with my current terminal/screen/etc...
-        if ((LINES > COLUMNS * 0.4)); then
-            p_pos="--preview-window=top"
-            p_change="--bind=ctrl-/:change-preview-window(right,50%|hidden|)"
-        fi
-
+        source "$ZSCRIPTS/fzf_preview.zsh"
         local preview=$(printf '%s' \
             "echo {} | grep --only-matching '[a-f0-9]\{7\}' |" \
             "head -1 | xargs git show --color=always")

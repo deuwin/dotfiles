@@ -187,6 +187,26 @@ if is_command fzf; then
             fi
         fi
     }
+
+    # preview files - inspired by:
+    # https://github.com/nickjj/dotfiles/blob/master/.config/zsh/.aliases
+    pf() {
+        source "$ZSCRIPTS/fzf_preview.zsh"
+        {
+            pf_clip () {
+                local input
+                read input
+                if command -v xsel > /dev/null; then
+                    print -n "$input" | xsel --clipboard
+                fi
+            }
+            fzf --preview="less {}" $p_pos $p_change \
+                --bind "ctrl-l:execute:less --clear-screen \
+                        -+--quit-if-one-screen {}" | pf_clip
+        } always {
+            unfunction pf_clip
+        }
+    }
 fi
 
 

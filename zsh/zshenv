@@ -12,6 +12,7 @@ ZSHSTATE="$HOME/.local/state/zsh"
 if [[ ! -d $ZSHSTATE ]]; then
     command mkdir -p $ZSHSTATE
 fi
+ZSCRIPTS="$ZDOTDIR/scripts"
 export HISTFILE="$ZSHSTATE/zsh_history" # History filepath
 export HISTSIZE=3000                    # Maximum events for internal history
 export SAVEHIST=3000                    # Maximum events in history file
