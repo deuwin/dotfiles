@@ -147,7 +147,10 @@ if is_command nala; then
     alias apt-get="apt"
 fi
 if is_command fzf; then
-    export FZF_DEFAULT_OPTS="--layout=reverse --color=border:245 --ellipsis=…"
+    printf -v FZF_DEFAULT_OPTS "%s " \
+        "--layout=reverse --color=border:245 --ellipsis=… --cycle"
+    export FZF_DEFAULT_OPTS
+
     # https://github.com/junegunn/fzf/wiki/Examples
     # fman: Fuzzy search manpage titles
     fman() {
