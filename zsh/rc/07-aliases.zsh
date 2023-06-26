@@ -56,6 +56,7 @@ unset idx
 alias ...="cd ../.."
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
+alias -- -="cd -"
 
 # Create dir and cd into it
 mkcd() {
