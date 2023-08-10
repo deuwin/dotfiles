@@ -178,8 +178,12 @@ if is_command fzf; then
             pid=$(ps -ef | sed 1d | fzf --multi | awk '{print $2}')
         fi
 
-        if [ -n $pid ]; then
+        if [[ -n $pid ]]; then
             local cmd="\"$(ps --pid $pid --format args=)\""
+            if [ -z $cmd ]; then
+                print "Exit"
+                return 0
+            fi
             local prompt="Do you want to kill $cmd? [N/y] "
             local confirm=""
             read -q "confirm?$prompt"
@@ -187,8 +191,11 @@ if is_command fzf; then
                 print "\nKilling [$pid] $cmd..."
                 echo $pid | xargs kill -${1:-9}
             else
+                print ${confirm:1:1}
                 print "Cancelling..."
             fi
+        else
+            print "Exiting"
         fi
     }
 
