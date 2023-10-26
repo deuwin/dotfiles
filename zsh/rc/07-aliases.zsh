@@ -205,15 +205,19 @@ if is_command fzf; then
         source "$ZSCRIPTS/fzf_preview.zsh"
         {
             pf_clip () {
-                local input
-                read input
+                local input="$1"
                 if command -v xsel > /dev/null; then
                     print -n "$input" | xsel --clipboard
+                else
+                    print "$input"
                 fi
             }
-            fzf --preview="less {}" $p_pos $p_change \
-                --bind "ctrl-l:execute:less --clear-screen \
-                        -+--quit-if-one-screen {}" | pf_clip
+            local filename
+            filename=$(
+                fzf --preview="less {}" $p_pos $p_change \
+                    --bind "ctrl-l:execute:less --clear-screen \
+                            -+--quit-if-one-screen {}")
+            pf_clip "$filename"
         } always {
             unfunction pf_clip
         }
