@@ -223,6 +223,13 @@ if is_command fzf; then
         }
     }
 fi
+if is_command bat; then
+    alias cat="bat --style=plain --paging=never"
+    # bat-help: Colourises help output by piping it through bat
+    bh() {
+        $1 --help | bat --language=help --style=plain
+    }
+fi
 
 
 ####
