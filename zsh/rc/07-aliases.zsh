@@ -262,11 +262,12 @@ if is_command rg; then
     if is_command fzf && is_command bat; then
         # from https://github.com/junegunn/fzf/blob/master/ADVANCED.md
         rf() {
-            local rg_prefix initial_query="${*:-}" alt_enter
+            local rg_prefix initial_query="${*:-}" alt_enter bat_cmd
             printf -v rg_prefix '%s' "rg --column --line-number --no-heading " \
                 "--color=always --smart-case "
             printf -v alt_enter '%s' "alt-enter:unbind(change,alt-enter)" \
                 "+change-prompt(2. fzf> )+enable-search+clear-query"
+            readonly bat_cmd="bat --color=always --highlight-line {2} {1}"
             : | fzf --ansi --disabled --query "$initial_query" \
                 --bind "start:reload:$rg_prefix {q}" \
                 --bind "change:reload:sleep 0.1; $rg_prefix {q} || true" \
@@ -274,9 +275,10 @@ if is_command rg; then
                 --color "hl:-1:underline,hl+:-1:underline:reverse" \
                 --prompt "1. ripgrep> " \
                 --delimiter : \
-                --preview "bat --color=always {1} --highlight-line {2}" \
+                --preview $bat_cmd \
                 --preview-window "up,60%,border-bottom,+{2}+3/3,~3" \
-                --bind "enter:become(vim {1} +{2})"
+                --bind "enter:execute($bat_cmd --pager='less +{2}')" \
+                --bind "ctrl-e:become(vim {1} +{2})"
         }
     fi
 fi
