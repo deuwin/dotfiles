@@ -72,7 +72,7 @@ cdt() {
 if is_command lsd; then
     alias ls="lsd --color=auto --group-directories-first"
     alias l.="la --ignore-glob='[a-zA-Z]*'"
-    alias lt='ls --tree'
+    alias lt="ls --tree"
 else
     alias ls="ls --classify --color=auto --group-directories-first"
     alias l.="la --ignore='[a-zA-Z]*'"
@@ -257,14 +257,15 @@ findi() {
 # Find in Files
 #
 if is_command rg; then
-    rg() {
+    _rg() {
         # page automatically if outputting to a terminal
-        if [ -t 1 ];then
-            command rg --smart-case --pretty $@ | less --RAW-CONTROL-CHARS
+        if [ -t 1 ]; then
+            rg --smart-case --pretty $@ | less --RAW-CONTROL-CHARS
         else
-            command rg --smart-case --pretty $@
+            rg --smart-case --pretty $@
         fi
     }
+    alias rg="noglob _rg"
 
     if is_command fzf && is_command bat; then
         # from https://github.com/junegunn/fzf/blob/master/ADVANCED.md
