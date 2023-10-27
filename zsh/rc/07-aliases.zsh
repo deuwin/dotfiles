@@ -285,7 +285,7 @@ if is_command rg; then
                 --delimiter : \
                 --preview $bat_cmd \
                 --preview-window "up,60%,border-bottom,+{2}+3/3,~3" \
-                --bind "enter:execute($bat_cmd --pager='less +{2}')" \
+                --bind "ctrl-l:execute($bat_cmd --pager='less +{2}')" \
                 --bind "ctrl-e:become(vim {1} +{2})"
         }
     fi
