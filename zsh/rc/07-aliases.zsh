@@ -122,6 +122,7 @@ rd() {
         rm --interactive=once --recursive "$1"
     fi
 }
+compdef "_files -/" rd
 
 
 ####
