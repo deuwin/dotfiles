@@ -17,14 +17,28 @@ is_function() {
     typeset -f "$1" > /dev/null
 }
 
-# is version greater than
-is_version_gt() {
-    local target="$1" current="$2"
-    if [ -z $target ] || [ -z $current ]; then
+# greater than or equal to
+is_version_gte() {
+    if [ -z $1 ] || [ -z $2 ]; then
         print "You must supply two version strings!"
         return 2
     fi
-    print "$target\n$current" | sort --version-sort --check=quiet
+    print "$2\n$1" | sort --version-sort --check=quiet
+}
+
+# less than or equal to
+is_version_lte() {
+    is_version_gte $2 $1
+}
+
+# greater than
+is_version_gt() {
+    ! is_version_gte $2 $1
+}
+
+# less than
+is_version_lt() {
+    ! is_version_gte $1 $2
 }
 
 

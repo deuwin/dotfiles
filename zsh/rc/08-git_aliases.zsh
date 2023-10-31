@@ -132,7 +132,7 @@ _yolo() {
 ## functions
 # pretty formatting
 if ! git config --get format.pretty > /dev/null; then
-    if is_version_gt "2.35.0" $(git --version | awk '{print $3}'); then
+    if is_version_gte $(git --version | awk '{print $3}') "2.35.0"; then
         pretty=$(printf "%s" \
             "%C(auto)%H %d%n" \
             "%C(default)📅 %ah · 🖉  %an · ﹫ %ae" \
