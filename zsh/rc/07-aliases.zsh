@@ -246,6 +246,9 @@ if is_command fdfind; then
     alias fd="noglob fdfind"
     alias fdf="fd --type f"
     alias fdd="fd --type d"
+    alias fdu="fd --unrestricted"
+    alias fdfu="fdf --unrestricted"
+    alias fddu="fdd --unrestricted"
 else
     alias fd="findi"
 fi
@@ -271,42 +274,53 @@ if is_command rg; then
         fi
     }
     alias rg="noglob _rg"
+    alias rgu="rg --unrestricted --unrestricted"
+    alias rgl="rg --fixed-strings"
+    alias rglu="rgl --unrestricted --unrestricted"
 
     if is_command fzf && is_command bat; then
         # ripgrep and fzf integration based on code from:
         # https://github.com/junegunn/fzf/blob/master/ADVANCED.md#ripgrep-integration
-        rf() {
-            local rg_prefix initial_query="${*:-}" alt_enter bat_cmd
-            printf -v rg_prefix '%s' "rg --column --line-number --no-heading " \
-                "--color=always --smart-case "
+        _rf() {
+            local rg_flags="$1" initial_query="$2" 
+
+            local rg_cmd alt_enter
+            printf -v rg_cmd '%s' "rg --column --line-number --no-heading " \
+                "--color=always --smart-case $rg_flags"
             printf -v alt_enter '%s' "alt-enter:unbind(change,alt-enter)" \
                 "+change-prompt(2. fzf> )+enable-search+clear-query"
-            readonly preview="bat --color=always --highlight-line={2} {1}"
 
-            local escape bat_opts pager_opts bat_cmd
-            bat_opts="bat --color=always --highlight-line={2}"
+            local bat_cmd escape_dots pager_opts bat_full
+            bat_cmd="bat --color=always --highlight-line={2}"
+
             # Escape dots in filename, otherwise they are interpreted as part
             # of an if statement used by --prompt option in less
-            escape="f={1}; f=\${f/./\\\.};"
+            escape_dots="f={1}; f=\${f/./\\\.};"
+
             # Pager option passed to bat. Values for less' --prompt flag can be
             # found in the man page for less under the section on PROMPTS
             printf -v pager_opts '%s ' \
                 "--pager=\"less +G +{2} -+--quit-if-one-screen " \
                     "--prompt='M\$f lines %lt-%lb?L/%L. ?pB%pB\% .?e(END) %t'\""
-            printf -v bat_cmd '%s ' $escape $bat_opts $pager_opts
+
+            printf -v bat_full '%s ' $escape_dots $bat_cmd $pager_opts
 
             : | fzf --ansi --disabled --query "$initial_query" \
-                --bind "start:reload:$rg_prefix {q}" \
-                --bind "change:reload:sleep 0.1; $rg_prefix {q} || true" \
+                --bind "start:reload:$rg_cmd {q}" \
+                --bind "change:reload:sleep 0.1; $rg_cmd {q} || true" \
                 --bind $alt_enter \
                 --color "hl:-1:underline,hl+:-1:underline:reverse" \
                 --prompt "1. ripgrep> " \
                 --delimiter : \
-                --preview $preview \
+                --preview "$bat_cmd {1}" \
                 --preview-window "up,60%,border-bottom,+{2}+3/3,~3" \
-                --bind "ctrl-l:execute($bat_cmd {1})" \
+                --bind "ctrl-l:execute($bat_full {1})" \
                 --bind "ctrl-e:become(vim {1} +{2})"
         }
+        alias rf="noglob _rf \"\""
+        alias rfu="noglob _rf \"--unrestricted --unrestricted\""
+        alias rfl="noglob _rf --fixed-strings"
+        alias rful="noglob _rf \"--unrestricted ---unrestricted -fixed-strings\""
     fi
 fi
 if is_command ack; then
