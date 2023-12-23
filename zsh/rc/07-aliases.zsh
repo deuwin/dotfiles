@@ -273,14 +273,28 @@ if is_command rg; then
     alias rg="noglob _rg"
 
     if is_command fzf && is_command bat; then
-        # from https://github.com/junegunn/fzf/blob/master/ADVANCED.md
+        # ripgrep and fzf integration based on code from:
+        # https://github.com/junegunn/fzf/blob/master/ADVANCED.md#ripgrep-integration
         rf() {
             local rg_prefix initial_query="${*:-}" alt_enter bat_cmd
             printf -v rg_prefix '%s' "rg --column --line-number --no-heading " \
                 "--color=always --smart-case "
             printf -v alt_enter '%s' "alt-enter:unbind(change,alt-enter)" \
                 "+change-prompt(2. fzf> )+enable-search+clear-query"
-            readonly bat_cmd="bat --color=always --highlight-line {2} {1}"
+            readonly preview="bat --color=always --highlight-line={2} {1}"
+
+            local escape bat_opts pager_opts bat_cmd
+            bat_opts="bat --color=always --highlight-line={2}"
+            # Escape dots in filename, otherwise they are interpreted as part
+            # of an if statement used by --prompt option in less
+            escape="f={1}; f=\${f/./\\\.};"
+            # Pager option passed to bat. Values for less' --prompt flag can be
+            # found in the man page for less under the section on PROMPTS
+            printf -v pager_opts '%s ' \
+                "--pager=\"less +G +{2} -+--quit-if-one-screen " \
+                    "--prompt='M\$f lines %lt-%lb?L/%L. ?pB%pB\% .?e(END) %t'\""
+            printf -v bat_cmd '%s ' $escape $bat_opts $pager_opts
+
             : | fzf --ansi --disabled --query "$initial_query" \
                 --bind "start:reload:$rg_prefix {q}" \
                 --bind "change:reload:sleep 0.1; $rg_prefix {q} || true" \
@@ -288,9 +302,9 @@ if is_command rg; then
                 --color "hl:-1:underline,hl+:-1:underline:reverse" \
                 --prompt "1. ripgrep> " \
                 --delimiter : \
-                --preview $bat_cmd \
+                --preview $preview \
                 --preview-window "up,60%,border-bottom,+{2}+3/3,~3" \
-                --bind "ctrl-l:execute($bat_cmd --pager='less +{2}')" \
+                --bind "ctrl-l:execute($bat_cmd {1})" \
                 --bind "ctrl-e:become(vim {1} +{2})"
         }
     fi
