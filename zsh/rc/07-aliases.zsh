@@ -80,6 +80,7 @@ fi
 alias la="ls --almost-all -v"
 alias ll="ls --human-readable -l"
 alias lla="ll --almost-all -v"
+alias ll.="l. -l"
 
 # Change dir and list contents
 cl() {
