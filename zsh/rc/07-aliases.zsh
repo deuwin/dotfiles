@@ -160,15 +160,18 @@ if is_command fzf; then
         typeset -la view=(
             "echo {} | tr --delete '()' | "
             "awk '{printf \"%s \", \$2} {print \$1}' | "
-            "xargs --no-run-if-empty man"
+            "xargs --no-run-if-empty man --pager=\"less -+--quit-if-one-screen\""
         )
         local query="${*:-}"
+        source "$ZSCRIPTS/fzf_preview.zsh"
         man --apropos . | \
             fzf --query "$query" \
                 --nth="1,2" \
                 --prompt="man> " \
                 --preview="$view" \
-                --bind "enter:execute:$view"
+                --bind "enter:execute:$view" \
+                $p_pos \
+                $p_change
     }
 
     # fkill: Fuzzy search processes to kill
