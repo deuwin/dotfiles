@@ -145,7 +145,7 @@ else
     alias dud="du --max-depth=1"
 fi
 if is_command nala; then
-    alias apt="echo 'Don\'t you mean nala?'"
+    alias apt="nala"
     alias apt-get="apt"
 fi
 if is_command fzf; then
