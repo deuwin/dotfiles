@@ -8,3 +8,9 @@
 autoload -Uz url-quote-magic bracketed-paste-magic
 zle -N self-insert url-quote-magic
 zle -N bracketed-paste bracketed-paste-magic
+
+# let zsh's autocomplete select files and directories
+if is_command delta; then
+    compdef _files delta
+fi
+
