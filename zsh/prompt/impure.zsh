@@ -34,6 +34,10 @@ _impure_precmd() {
         fi
         unset _impure_cmd_start
     fi
+
+    # background jobs
+    typeset -g _impure_bg_jobs
+    print -Pv _impure_bg_jobs '%(1j. ✦%j.)'
 }
 
 _impure_generate_prompt() {
@@ -42,25 +46,39 @@ _impure_generate_prompt() {
 
     # user and host name
     # [ -n ${SSH_CONNECTION} ] && local ps1='%F{246}%n%F{grey}@%F{green}%m'
-    local ps1='%F{246}%n%F{grey}@%F{green}%m'
-
-    # current working directory
-    ps1+='%F{white}:%F{blue}%(4c:…/:)%3~'
+    local user_host='%F{246}%n%F{grey}@%F{green}%m%F{white}:'
 
     # git info
     if ! $_IMPURE_GIT_INFO_RPROMPT; then
-        ps1+="$_impure_git_prompt"
+        local git_info="$_impure_git_prompt"
     fi
 
     # background jobs
-    ps1+='%(1j. %F{cyan}✦%j.)'
+    local bg_jobs='%F{cyan}'$_impure_bg_jobs
 
     # command execution time
-    ps1+='%F{yellow}'$_impure_exec_time
+    local exec_time='%F{yellow}'$_impure_exec_time
 
-    # dynamic multiline prompt
+    # current working directory - this will be truncated if needed
     # regex to remove elements that take no space (i.e. strip formatting)
     local zero_len='%([BSUbfksu]|([FB]|){*})'
+    local user_host_width=${#${(S%)user_host//$~zero_len/}}
+    local git_info_width=${#${(S%)git_info//$~zero_len/}}
+    local bg_jobs_width=${#${(S%)bg_jobs//$~zero_len/}}
+    local exec_time_width=${#${(S%)exec_time//$~zero_len/}}
+
+    local path_len_max=$((
+        COLUMNS
+        - user_host_width
+        - git_info_width
+        - bg_jobs_width
+        - exec_time_width
+        - 3)) # 3 for visible newline character
+    local path_tail='%F{blue}%'$path_len_max'<…<%(4c:…/:)%3~%<<'
+
+    # dynamic multiline prompt
+    # construct prompt before any potential newline split
+    local ps1="${user_host}${path_tail}${git_info}${bg_jobs}${exec_time}"
     local ps1_len=${#${(S%)ps1//$~zero_len/}}
     local exit_code_space=" "
     if ((ps1_len > COLUMNS / 2)); then
