@@ -267,6 +267,8 @@ else
             fzf --ansi --no-sort --exact \
                 --preview $preview \
                 --bind "enter:execute:$bind" \
+                --bind 'esc:become:' \
+                --bind 'ctrl-c:become:' \
                 $p_pos \
                 $p_change
     }

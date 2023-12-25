@@ -170,6 +170,8 @@ if is_command fzf; then
                 --prompt="man> " \
                 --preview="$view" \
                 --bind "enter:execute:$view" \
+                --bind 'esc:become:' \
+                --bind 'ctrl-c:become:' \
                 $p_pos \
                 $p_change
     }
@@ -221,7 +223,9 @@ if is_command fzf; then
             filename=$(
                 fzf --preview="less {}" $p_pos $p_change \
                     --bind "ctrl-l:execute:less --clear-screen \
-                            -+--quit-if-one-screen {}")
+                            -+--quit-if-one-screen {}" \
+                    --bind 'esc:become:' \
+                    --bind 'ctrl-c:become:')
             pf_clip "$filename"
         } always {
             unfunction pf_clip
@@ -315,7 +319,9 @@ if is_command rg; then
                 --preview "$bat_cmd {1}" \
                 --preview-window "up,60%,border-bottom,+{2}+3/3,~3" \
                 --bind "ctrl-l:execute($bat_full {1})" \
-                --bind "ctrl-e:become(vim {1} +{2})"
+                --bind "ctrl-e:become($EDITOR {1} +{2})" \
+                --bind 'esc:become:' \
+                --bind 'ctrl-c:become:'
         }
         alias rf="noglob _rf \"\""
         alias rfu="noglob _rf \"--unrestricted --unrestricted\""
