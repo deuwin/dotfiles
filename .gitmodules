@@ -1,14 +1,14 @@
 [submodule "zsh/plugins/zsh-async"]
-	path = zsh/plugins/zsh-async
+	path = zsh/third_party/zsh-async
 	url = https://github.com/mafredri/zsh-async.git
 [submodule "zsh/plugins/fast-syntax-highlighting"]
-	path = zsh/plugins/fast-syntax-highlighting
+	path = zsh/third_party/fast-syntax-highlighting
 	url = https://github.com/zdharma-continuum/fast-syntax-highlighting
 [submodule "zsh/plugins/zsh-autocomplete"]
-	path = zsh/plugins/zsh-autocomplete
+	path = zsh/third_party/zsh-autocomplete
 	url = https://github.com/marlonrichert/zsh-autocomplete.git
 [submodule "zsh/plugins/zsh-autosuggestions"]
-	path = zsh/plugins/zsh-autosuggestions
+	path = zsh/third_party/zsh-autosuggestions
 	url = https://github.com/zsh-users/zsh-autosuggestions.git
 [submodule "tmux/plugins/extrakto"]
 	path = tmux/plugins/extrakto
@@ -20,5 +20,5 @@
 	path = tmux/plugins/tpm
 	url = https://github.com/tmux-plugins/tpm
 [submodule "zsh/scripts/fzf-git.sh"]
-	path = zsh/scripts/fzf-git.sh
+	path = zsh/third_party/fzf-git.sh
 	url = https://github.com/junegunn/fzf-git.sh.git

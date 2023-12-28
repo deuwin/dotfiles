@@ -10,9 +10,6 @@ start_ssh_agent() {
         echo "Failed to start SSH Agent!"
         return
     }
-    # add keys with non-standard names as needed
-    # ssh-add $HOME/.ssh/id_my-weird-key-name
-
     chmod --changes 600 "${SSH_ENV}"
     source "${SSH_ENV}" > /dev/null
 }
@@ -26,3 +23,5 @@ else
     start_ssh_agent;
 fi
 
+unfunction start_ssh_agent
+unset SSH_ENV

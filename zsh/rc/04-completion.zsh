@@ -9,7 +9,7 @@ bindkey -e
 
 # zsh-autocomplete
 # https://github.com/marlonrichert/zsh-autocomplete
-source $ZDOTDIR/plugins/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+source $ZDOTDIR/third_party/zsh-autocomplete/zsh-autocomplete.plugin.zsh
 ## tab inserts common substring
 # all Tab widgets
 zstyle ":autocomplete:*complete*:*" insert-unambiguous yes
@@ -24,4 +24,4 @@ bindkey -M menuselect '\r' .accept-line
 
 # autosuggestions
 # https://github.com/zsh-users/zsh-autosuggestions
-source $ZDOTDIR/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+source $ZDOTDIR/third_party/zsh-autosuggestions/zsh-autosuggestions.zsh

@@ -254,7 +254,7 @@ _impure_git_setup() {
     zstyle ":vcs_info:git:*" actionformats "%r" "%b" "%a" "%m"
 
     # asynchronous VCS status
-    source $ZDOTDIR/plugins/zsh-async/async.zsh
+    source $ZDOTDIR/third_party/zsh-async/async.zsh
     async_init
     _impure_git_start_async
     autoload -Uz add-zsh-hook

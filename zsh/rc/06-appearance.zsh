@@ -17,4 +17,4 @@ zstyle ":completion:*:*:*:*:default" list-colors ${(s.:.)LS_COLORS} "ma=38;5;15;
 # syntax highlighting
 # https://github.com/zdharma-continuum/fast-syntax-highlighting
 # like zsh-syntax-highlighting but better in a few cases
-source $ZDOTDIR/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+source $ZDOTDIR/third_party/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh

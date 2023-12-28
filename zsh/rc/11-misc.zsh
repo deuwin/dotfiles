@@ -14,3 +14,7 @@ if is_command delta; then
     compdef _files delta
 fi
 
+# fzf-git.sh: https://github.com/junegunn/fzf-git.sh
+# browse git objects using fzf
+is_command fzf && source $ZDOTDIR/third_party/fzf-git.sh/fzf-git.sh
+

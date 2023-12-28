@@ -33,6 +33,8 @@ typeset -a _zshrc_watch_files=(
     "rc/*"
     "prompt/*"
     "scripts/*"
+    "third_party/*"
+    "local/*"
 )
 
 _zshrc_restart_precmd() {
