@@ -44,6 +44,7 @@ setopt   hist_find_no_dups      # do not display a previously found event
 setopt   hist_ignore_space      # do not record an event starting with a space
 setopt   hist_save_no_dups      # do not write a duplicate event to the history file
 setopt   hist_verify            # do not execute immediately upon history expansion
+setopt   hist_reduce_blanks     # remove extra blanks from each command
 
 
 ####
