@@ -16,6 +16,8 @@ zstyle ":autocomplete:*" min-delay 0.125
 zstyle -e ":autocomplete:*" list-lines "reply=( $((LINES / 3)) )"
 # <enter>: execute selected item from menu
 bindkey -M menuselect '\r' .accept-line
+# don't show completions that begin with two or more dots
+zstyle ':autocomplete:*' ignored-input '..##'
 
 # autosuggestions
 # https://github.com/zsh-users/zsh-autosuggestions
