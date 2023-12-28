@@ -2,11 +2,6 @@
 # Completion
 #
 
-# emacs keys at prompt
-# should be in keybinds but then zsh-autocomplete's keybinds wouldn't be in
-# emacs style
-bindkey -e
-
 # zsh-autocomplete
 # https://github.com/marlonrichert/zsh-autocomplete
 source $ZDOTDIR/third_party/zsh-autocomplete/zsh-autocomplete.plugin.zsh

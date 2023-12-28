@@ -13,6 +13,9 @@
 #            https://zsh.sourceforge.io/Guide/zshguide04.html#l102
 #
 
+# emacs keys at prompt
+bindkey -e
+
 # additional keybinds not provided by /etc/zsh/zshrc
 key[Control+Left]="${terminfo[kLFT5]}"
 key[Control+Right]="${terminfo[kRIT5]}"
