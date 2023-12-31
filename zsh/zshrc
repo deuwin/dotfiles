@@ -1,5 +1,4 @@
-#!/usr/bin/env zsh
-
+#
 # A collection of settings inspired by/stolen from:
 #   https://thevaluable.dev/zsh-install-configure-mouseless/
 #   https://wiki.archlinux.org/title/zsh#Sample_.zshrc_files

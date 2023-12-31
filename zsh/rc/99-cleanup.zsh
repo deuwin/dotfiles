@@ -1,5 +1,3 @@
-#!/usr/bin/env zsh
-
 ###
 # Clean up
 #

@@ -1,5 +1,3 @@
-#!/usr/bin/env zsh
-
 # Inspired by/stolen from:
 # https://github.com/davidde/git
 # https://github.com/junegunn/fzf/wiki/examples#git

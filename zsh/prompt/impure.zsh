@@ -1,5 +1,4 @@
-#!/usr/bin/env zsh
-
+#
 # Impure
 #
 # with ideas stolen/borrowed from:

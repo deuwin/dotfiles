@@ -1,5 +1,4 @@
-#!/usr/bin/env zsh
-
+#
 # Impure Git Repository Information
 #
 # with ideas stolen/borrowed from:
