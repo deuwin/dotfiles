@@ -46,6 +46,9 @@ setopt   hist_save_no_dups      # do not write a duplicate event to the history 
 setopt   hist_verify            # do not execute immediately upon history expansion
 setopt   hist_reduce_blanks     # remove extra blanks from each command
 
+# do not add commands to the history file that match the following pattern,
+# however they will be available in local history
+HISTORY_IGNORE='(fg*|d|d *)'
 
 ####
 # Navigation
