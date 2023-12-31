@@ -16,6 +16,9 @@
 # emacs keys at prompt
 bindkey -e
 
+# fzf keybinds
+source $ZDOTDIR/third_party/fzf_key_bindings.zsh
+
 # additional keybinds not provided by /etc/zsh/zshrc
 key[Control+Left]="${terminfo[kLFT5]}"
 key[Control+Right]="${terminfo[kRIT5]}"
