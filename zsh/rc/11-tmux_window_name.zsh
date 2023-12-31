@@ -19,8 +19,9 @@ _impure_window_name_set() {
 
     # check if set by user
     if [[ -z $(tmux display-message -p "#{@impure_window_name_user}") ]]; then
-        tmux set-option -w "@impure_window_name_script" "true"
-        tmux rename-window "$1"
+        tmux \
+            set-option -w "@impure_window_name_script" "true" \; \
+            rename-window "$1"
     fi
 }
 
@@ -65,9 +66,9 @@ _impure_window_name_precmd() {
 # setup
 #
 get_free_hook_index() {
-    local hooks_set=(${(f)"$(tmux show-hooks -gw $1)"})
+    local active_hooks=(${(f)"$(tmux show-hooks -gw $1)"})
     local index
-    if [[ ${hooks_set[-1]} =~ "\[([[:digit:]]+)\]" ]]; then
+    if [[ ${active_hooks[-1]} =~ "\[([[:digit:]]+)\]" ]]; then
         index=$((match + 1))
     else
         index=0
@@ -75,11 +76,17 @@ get_free_hook_index() {
     print $index
 }
 
-set_tmux_hooks() {
-    local set_flag="@impure_window_name_hooks_set"
-    if [[ -n $(tmux display-message -p "#{$set_flag}") ]]; then
+set_tmux_options() {
+    local options_set="@impure_window_name_options_set"
+    if [[ -n $(tmux display-message -p "#{$options_set}") ]]; then
         return
     fi
+
+    # disallow programs running in panes to set window names and
+    # disable tmux automatic renaming
+    tmux \
+        set-option -g allow-rename off \; \
+        set-option -g automatic-rename off
 
     local -A hooks
 
@@ -109,28 +116,25 @@ set_tmux_hooks() {
         index=$(get_free_hook_index $hook)
         tmux set-hook -g $hook"["$index"]" "$cmd"
     done
-    tmux set-option -g $set_flag "true"
+    tmux set-option -g $options_set "true"
 }
 
 () {
-    # disallow programs running in panes to set window names
-    # disable tmux automatic renaming
-    tmux \
-        set-option -g allow-rename off\; \
-        set-option -g automatic-rename off
-    set_tmux_hooks
+    set_tmux_options
 
     # initial flag values
+    # this is to ensure that new panes inherit the window's user set flag so
+    # they don't change the name if the user has set it
     tmux \
         set-option -w "@impure_window_name_script" "" \; \
         set-option -w "@impure_window_name_user" \
             "$(tmux display-message -p '#{@impure_window_name_user}')"
 
-    # add hooks
+    # add zsh hooks
     add-zsh-hook preexec _impure_window_name_preexec
     add-zsh-hook precmd _impure_window_name_precmd
 
     # clean up
-    unfunction set_tmux_hooks
+    unfunction set_tmux_options
     unfunction get_free_hook_index 
 }
