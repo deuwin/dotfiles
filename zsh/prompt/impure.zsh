@@ -98,12 +98,9 @@ _impure_generate_prompt() {
     print $ps1
 }
 
-_impure_generate_rprompt() {
-    print $_impure_git_rprompt
-}
-
 # setup
-_impure_setup() {
+source $ZDOTDIR/prompt/impure_git.zsh
+() {
     # Expand parameters, commands, and arithmetic in PROMPT
     setopt prompt_subst
 
@@ -117,9 +114,9 @@ _impure_setup() {
 
     PROMPT='$(_impure_generate_prompt)'
     if $_IMPURE_GIT_INFO_RPROMPT; then
+        _impure_generate_rprompt() {
+            print $_impure_git_rprompt
+        }
         RPROMPT='$(_impure_generate_rprompt)'
     fi
 }
-
-source $ZDOTDIR/prompt/impure_git.zsh
-_impure_setup
