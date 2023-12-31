@@ -20,8 +20,7 @@ _impure_window_name_set() {
     # check if set by user
     if [[ -z $(tmux display-message -p "#{@impure_window_name_user}") ]]; then
         tmux set-option -w "@impure_window_name_script" "true"
-        print -n "\ek$1\e\\"
-        tmux set-option -w "@impure_window_name_script" ""
+        tmux rename-window "$1"
     fi
 }
 
@@ -114,10 +113,10 @@ set_tmux_hooks() {
 }
 
 () {
-    # allow programs running in panes to set window names
+    # disallow programs running in panes to set window names
     # disable tmux automatic renaming
     tmux \
-        set-option -g allow-rename on\; \
+        set-option -g allow-rename off\; \
         set-option -g automatic-rename off
     set_tmux_hooks
 
