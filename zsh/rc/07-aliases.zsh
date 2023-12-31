@@ -23,10 +23,9 @@ hash -d zrc=$ZDOTDIR/rc
 ####
 # Edit and Source Configs
 #
-alias ec="$EDITOR $ZDOTDIR/zshrc"
-alias ea="$EDITOR $ZDOTDIR/rc/07-aliases.zsh"
-alias et="$EDITOR $HOME/.config/tmux/tmux.conf"
-alias ev="$EDITOR $HOME/.config/vim/vimrc"
+alias ez="(cd $ZDOTDIR && $EDITOR)"
+alias et="(cd $HOME/.config/tmux && $EDITOR)"
+alias ev="(cd $HOME/.config/vim && $EDITOR vimrc)"
 alias sc="exec zsh"
 alias zrf="touch $ZDOTDIR/zshrc"
 
