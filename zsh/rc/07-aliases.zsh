@@ -288,6 +288,7 @@ if is_command rg; then
             printf -v alt_enter '%s' "alt-enter:unbind(change,alt-enter)" \
                 "+change-prompt(2. fzf> )+enable-search+clear-query"
 
+            # I'd use lesspipe but bat provides line highlighting
             local bat_cmd escape_dots pager_opts bat_full
             bat_cmd="bat --color=always --highlight-line={2}"
 
@@ -303,6 +304,7 @@ if is_command rg; then
 
             printf -v bat_full '%s ' $escape_dots $bat_cmd $pager_opts
 
+            source "$ZSCRIPTS/fzf_preview.zsh"
             : | fzf --ansi --disabled --query "$initial_query" \
                 --bind "start:reload:$rg_cmd {q}" \
                 --bind "change:reload:sleep 0.1; $rg_cmd {q} || true" \
@@ -311,11 +313,12 @@ if is_command rg; then
                 --prompt "1. ripgrep> " \
                 --delimiter : \
                 --preview "$bat_cmd {1}" \
-                --preview-window "up,60%,border-bottom,+{2}+3/3,~3" \
                 --bind "ctrl-l:execute($bat_full {1})" \
                 --bind "ctrl-e:become($EDITOR {1} +{2})" \
                 --bind 'esc:become:' \
-                --bind 'ctrl-c:become:'
+                --bind 'ctrl-c:become:' \
+                $p_pos \
+                $p_change
         }
         alias rf="noglob _rf \"\""
         alias rfu="noglob _rf \"--unrestricted --unrestricted\""
