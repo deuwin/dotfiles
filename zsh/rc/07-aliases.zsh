@@ -47,10 +47,12 @@ alias sudo="sudo "
 # Navigation and Listing
 #
 alias d="dirs -v"
-for idx in {1..9}; do
-    alias "$idx"="cd -${idx}"
-done
-unset idx
+() {
+    local ii
+    for ii in {1..9}; do
+        alias "$ii"="cd -${ii}"
+    done
+}
 
 alias ...="cd ../.."
 alias ....="cd ../../.."

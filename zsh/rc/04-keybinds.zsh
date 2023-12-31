@@ -17,6 +17,7 @@
 bindkey -e
 
 # fzf keybinds
+typeset -g __fzf_key_bindings_options
 source $ZDOTDIR/third_party/fzf_key_bindings.zsh
 
 # additional keybinds not provided by /etc/zsh/zshrc

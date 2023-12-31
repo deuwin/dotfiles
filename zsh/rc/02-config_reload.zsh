@@ -19,15 +19,16 @@ _zshrc_reload_log() {
 # Restart Settings
 # restart if zshrc or associated files change
 #
+typeset -g _zshrc_disable_restart _zshrc_start_time
 
 # auto-restart setting
 _zshrc_disable_restart=""
 
-# remember startup time
+# remember terminal startup time
 _zshrc_start_time=$EPOCHSECONDS
 
 # files to track
-typeset -a _zshrc_watch_files=(
+typeset -ag _zshrc_watch_files=(
     "zshrc"
     "colours/*"
     "rc/*"
@@ -91,8 +92,13 @@ add-zsh-hook precmd _zshrc_restart_precmd
 # Reload Settings
 # automatically source zshenv when the file changes (and exists)
 #
-_zshenv_reload_time=0 # load before first command
-_zshenv_boot_time=$(date -d "$(uptime -s)" '+%s') # uptime in epoch seconds
+typeset -g _zshenv_reload_time _zshenv_boot_time
+
+# set previous reload time, effectively never when first started
+_zshenv_reload_time=0
+
+# system boot time in epoch seconds
+_zshenv_boot_time=$(date -d "$(uptime -s)" '+%s')
 
 _zshenv_reload_preexec() {
     local zshenv=$ZDOTDIR/zshenv

@@ -23,7 +23,7 @@
 ####
 # rc files
 #
-for file in $ZDOTDIR/rc/*.zsh; do
-    source $file
+for rc_file in $ZDOTDIR/rc/*.zsh; do
+    source $rc_file
 done
-
+unset rc_file

@@ -48,7 +48,7 @@ setopt   hist_reduce_blanks     # remove extra blanks from each command
 
 # do not add commands to the history file that match the following pattern,
 # however they will be available in local history
-HISTORY_IGNORE='(fg*|d|d *)'
+export HISTORY_IGNORE='(fg*|d|d *)'
 
 ####
 # Navigation
