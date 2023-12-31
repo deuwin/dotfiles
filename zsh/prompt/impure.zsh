@@ -14,9 +14,6 @@ _impure_preexec() {
 }
 
 _impure_precmd() {
-    # clear terminal emulator title, let tmux handle setting it
-    print -Pn "\e]2\a"
-
     # execution time
     typeset -g _impure_exec_time=""
     if [[ -n $_impure_cmd_start ]]; then
