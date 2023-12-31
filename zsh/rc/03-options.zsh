@@ -27,12 +27,12 @@ setopt warn_create_global
 # History
 #
 # Useful history expansions
-#   !! - previous command in full
-#   !0 - first input word (command).
-#   !* - all arguments of previous command
-#   !^ - first argument of previous command
-#   !$ - last argument of previous command
-#   !n - nth argument of previous command
+#   !!  - previous command in full
+#   !!0 - first input word (command).
+#   !!* - all arguments of previous command
+#   !!^ - first argument of previous command
+#   !!$ - last argument of previous command
+#   !!n - nth argument of previous command
 #
 setopt   append_history         # append to history file, not replace
 setopt   inc_append_history     # append immediately to history file
