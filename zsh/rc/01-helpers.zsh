@@ -116,6 +116,12 @@ if $_IMPURE_LOGGING; then
             )
         }
 
+        # logging parameters
+        # $1 - message
+        #   text to be displayed in log file
+        # $2 - caller (optional)
+        #   automatically generated if blank, but provided if an override is
+        #   required to provide a more useful context for the log
         _impure_error() {
             _impure_log "Error" "$1" "$2"
         }
