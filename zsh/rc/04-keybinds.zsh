@@ -112,3 +112,15 @@ bindkey "^[^?" _backward-kill-dir
 autoload -z edit-command-line
 zle -N edit-command-line
 bindkey "^X^E" edit-command-line
+
+# resume background job
+# Ctrl-z
+# first seen: https://old.reddit.com/r/vim/comments/9bm3x0/ctrlz_binding/
+# tweaked as some programs had issues going to background if Ctrl-z was used
+# multiple times
+_resume_background_job() {
+    BUFFER="fg"
+    zle accept-line
+}
+zle -N _resume_background_job
+bindkey "^Z" _resume_background_job
