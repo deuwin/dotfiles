@@ -95,6 +95,9 @@ _backward-kill-word() {
 zle -N _backward-kill-word
 bindkey "^H" _backward-kill-word
 
+# Ctrl+Delete - delete next word
+bindkey "^[[3;5~" delete-word
+
 # Alt+Backspace - delete to previous /
 _backward-kill-dir() {
     local WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
