@@ -317,6 +317,7 @@ if is_command rg; then
                 --bind "ctrl-e:become($EDITOR {1} +{2})" \
                 --bind 'esc:become:' \
                 --bind 'ctrl-c:become:' \
+                --preview-window "up,60%,border-bottom,+{2}+3/3,~3" \
                 $p_pos \
                 $p_change
         }
