@@ -1,5 +1,6 @@
 #!/usr/bin/zsh
 set -e
+setopt extended_glob
 pane_pid=$1
 pane_cmd=$2
 
@@ -12,8 +13,13 @@ else
     cmd="[${pane_cmd}]"
 fi
 
-# get pids, remove foreground pid, and trim whitespace
-bg_pids=${${(@f)$(awk 'ORS=" " {if ($0 !~ /zsh$/) print $2}' <<< $processes)}:#${fg_proc[2]}}
+# get pids and remove foreground pid
+pids=${(@f)$(awk 'ORS=" " {if ($0 !~ /zsh$/) print $2}' <<< $processes)}
+bg_pids=${pids/${fg_proc[2]}/}
+# trim leading or trailing whitespace
+bg_pids=${${bg_pids%%[[:space:]]##}##[[:space:]]##}
+# separate with commas
+bg_pids=${bg_pids/\ /,\ }
 
 print -n "${cmd}"
 [[ -n $bg_pids ]] && print -n " ($bg_pids)"
