@@ -45,6 +45,7 @@ _impure_window_name_preexec() {
     local cmd_full=(${(z)1})
     local cmd_idx=1
     local sudo cmd arg dir
+    local match mbegin mend
 
     # using sudo?
     if [[ $cmd_full[1] == "sudo" ]]; then
