@@ -43,26 +43,31 @@ _impure_window_name_set() {
 #
 _impure_window_name_preexec() {
     local cmd_full=(${(z)1})
-    local cmd_idx=1 name=""
+    local cmd_idx=1
+    local sudo cmd arg dir
 
     # using sudo?
     if [[ $cmd_full[1] == "sudo" ]]; then
-        name="sudo "
+        sudo="sudo "
         ((cmd_idx++))
     fi
 
-    # some commands have subcommands that we also wish to show
-    local subcommand=(apt git nala)
-    if ((subcommand[(Ie)${cmd_full[$cmd_idx]}])); then
-        name+="${cmd_full[$cmd_idx]} "
-        ((cmd_idx++))
+    # command
+    cmd=$cmd_full[$cmd_idx]
+
+    # show first argument?
+    local show_args="apt|git|nala|man"
+    if [[ $cmd =~ $show_args ]]; then
+        arg=" $cmd_full[$((cmd_idx + 1))]"
     fi
-    name+=$cmd_full[$cmd_idx]
 
-    # path
-    name+=$(print -P ':%1~')
+    # show directory command was run in?
+    local show_dir="n?vim|rf([[:lower:]]+)?|rg([[:lower:]]+)?|fd([[:lower:]]+)?"
+    if [[ $cmd =~ $show_dir ]]; then
+        dir=$(print -P ':%1~')
+    fi
 
-    _impure_window_name_set $name
+    _impure_window_name_set "$sudo$cmd$arg$dir"
 }
 
 ####
