@@ -2,27 +2,40 @@
 # tmux window name
 #
 # Inspired by tmux-window-name (https://github.com/ofirgall/tmux-window-name)
-# this script sets the names the tmux windows using the current running command
+# this script sets the names of tmux windows using the current running command
 # and directory.
 #
 # The main difference is that this uses zsh hooks to trigger name changes, which
 # offers immediate response to command, directory, and pane changes. It also
 # allows the window name to display user aliases.
 #
-if [[ -z $TMUX ]]; then
-    return
-fi
+# If tmux is not active the title of the terminal emulator is updated using the
+# same rules as for tmux window names.
+#
 
+####
+# set name
+# function defines itself depending on if this zsh instance is within a tmux
+# session
+#
 _impure_window_name_set() {
-    # store new name
-    tmux set-option -p "@impure_window_name" "$1"
-
-    # check if set by user
-    if [[ -z $(tmux display-message -p "#{@impure_window_name_user}") ]]; then
-        tmux \
-            set-option -w "@impure_window_name_script" "true" \; \
-            rename-window "$1"
+    if [[ -n $TMUX ]]; then
+        _impure_window_name_set() {
+            # store new name
+            tmux set-option -p "@impure_window_name" "$1"
+            # check if set by user
+            if [[ -z $(tmux display-message -p "#{@iwn_user}") ]]; then
+                tmux \
+                    set-option -w "@iwn_script" "true" \; \
+                    rename-window "$1"
+            fi
+        }
+    else
+        _impure_window_name_set() {
+            print -n "\e]0;$1\a"
+        }
     fi
+    _impure_window_name_set "$1"
 }
 
 ####
@@ -58,7 +71,6 @@ _impure_window_name_preexec() {
 _impure_window_name_precmd() {
     # clear the pane title in case it was set by a running program
     print -n "\e]2;\e\\"
-
     _impure_window_name_set $(print -P "zsh:%1~")
 }
 
@@ -77,7 +89,7 @@ get_free_hook_index() {
 }
 
 set_tmux_options() {
-    local options_set="@impure_window_name_options_set"
+    local options_set="@iwn_options_set"
     if [[ -n $(tmux display-message -p "#{$options_set}") ]]; then
         return
     fi
@@ -92,21 +104,21 @@ set_tmux_options() {
 
     # update the title when the pane changes, unless it has been set by the user
     print -v "hooks[window-pane-changed]" \
-        'if-shell -F "#{@impure_window_name_user}" {'\
+        'if-shell -F "#{@iwn_user}" {'\
         '}{' \
             'rename-window "#{@impure_window_name}";' \
         '}'
 
-    # checks if the rename event was trigged by the user or the script and
-    # restores the generated name if the user clears their custom name
+    # check if the rename event was trigged by the user or the script and
+    # restore the generated name if the user has cleared their custom name
     print -v "hooks[window-renamed]" \
-        'if-shell -F "#{@impure_window_name_script}" {' \
-            'set-option -w "@impure_window_name_script" ""' \
+        'if-shell -F "#{@iwn_script}" {' \
+            'set-option -w "@iwn_script" ""' \
         '}{' \
             'if-shell -F "#{window_name}" {' \
-                'set-option -w "@impure_window_name_user" "true"' \
+                'set-option -w "@iwn_user" "true"' \
             '}{' \
-                'set-option -w "@impure_window_name_user" "";' \
+                'set-option -w "@iwn_user" "";' \
                 'rename-window "#{@impure_window_name}";' \
             '}' \
         '}'
@@ -120,15 +132,9 @@ set_tmux_options() {
 }
 
 () {
-    set_tmux_options
-
-    # initial flag values
-    # this is to ensure that new panes inherit the window's user set flag so
-    # they don't change the name if the user has set it
-    tmux \
-        set-option -w "@impure_window_name_script" "" \; \
-        set-option -w "@impure_window_name_user" \
-            "$(tmux display-message -p '#{@impure_window_name_user}')"
+    if [[ -n $TMUX ]]; then
+        set_tmux_options
+    fi
 
     # add zsh hooks
     add-zsh-hook preexec _impure_window_name_preexec
