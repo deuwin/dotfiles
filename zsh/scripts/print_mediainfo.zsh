@@ -12,7 +12,7 @@ width="$2"
 height="$3"
 
 if [[ -z $width ]]; then
-    width=$COLS
+    width=$COLUMNS
     height=$LINES
 fi
 
