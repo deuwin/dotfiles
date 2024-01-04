@@ -126,25 +126,32 @@ compdef "_files -/" rd
 # Utilities
 #
 alias curl="noglob curl"
-alias df="df --human-readable"
 alias diff="diff --color=auto"
 alias ip="ip --color"
 alias wget="wget --hsts-file=$HOME/.config/wget-hsts"
 alias tarx="tar -xvf"
 alias tailf="tail -F"
 alias cmx="chmod u+x"
-# dud - disk usage directories
+
+# replacements
 if is_command dust; then
     alias du="dust"
-    alias dud="dust --depth 1 --only-dir"
+    alias dud="dust --depth 1 --only-dir" # disk usage, directories
 else
     alias du="du --human-readable --total"
     alias dud="du --max-depth=1"
+fi
+if is_command duf; then
+    alias df="duf"
+else
+    alias df="df --human-readable"
 fi
 if is_command nala; then
     alias apt="nala"
     alias apt-get="apt"
 fi
+
+# functions
 if is_command fzf; then
     printf -v FZF_DEFAULT_OPTS "%s " \
         "--layout=reverse --color=border:245 --ellipsis=… --cycle"
