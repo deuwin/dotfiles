@@ -18,9 +18,9 @@
 # function defines itself depending on if this zsh instance is within a tmux
 # session
 #
-_impure_window_name_set() {
+_impure:wn:set_name() {
     if [[ -n $TMUX ]]; then
-        _impure_window_name_set() {
+        _impure:wn:set_name() {
             # store new name
             tmux set-option -p "@impure_window_name" "$1"
             # check if set by user
@@ -31,17 +31,17 @@ _impure_window_name_set() {
             fi
         }
     else
-        _impure_window_name_set() {
+        _impure:wn:set_name() {
             print -n "\e]0;$1\a"
         }
     fi
-    _impure_window_name_set "$1"
+    _impure:wn:set_name "$1"
 }
 
 ####
 # set name while command is running
 #
-_impure_window_name_preexec() {
+_impure:wn:preexec() {
     local cmd_full=(${(z)1})
     local cmd_idx=1
     local sudo cmd arg dir
@@ -68,16 +68,16 @@ _impure_window_name_preexec() {
         dir=$(print -P ':%1~')
     fi
 
-    _impure_window_name_set "$sudo$cmd$arg$dir"
+    _impure:wn:set_name "$sudo$cmd$arg$dir"
 }
 
 ####
 # set name when at command prompt
 #
-_impure_window_name_precmd() {
+_impure:wn:precmd() {
     # clear the pane title in case it was set by a running program
     print -n "\e]2;\e\\"
-    _impure_window_name_set $(print -P "zsh:%1~")
+    _impure:wn:set_name $(print -P "zsh:%1~")
 }
 
 ####
@@ -143,8 +143,8 @@ set_tmux_options() {
     fi
 
     # add zsh hooks
-    add-zsh-hook preexec _impure_window_name_preexec
-    add-zsh-hook precmd _impure_window_name_precmd
+    add-zsh-hook preexec _impure:wn:preexec
+    add-zsh-hook precmd _impure:wn:precmd
 
     # clean up
     unfunction set_tmux_options
