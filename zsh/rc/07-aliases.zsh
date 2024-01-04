@@ -1,4 +1,3 @@
-#!/use/bin/env zsh
 ####
 # Aliases and Shell Functions
 #
@@ -71,6 +70,7 @@ cdt() {
 }
 
 if is_command lsd; then
+    # for default options see: ~/.config/lsd/config.yaml
     alias ls="lsd --color=auto --group-directories-first"
     alias l.="la --ignore-glob='[a-zA-Z]*'"
     alias lt="ls --tree"
@@ -123,6 +123,26 @@ compdef "_files -/" rd
 
 
 ####
+# Pagers
+#
+
+## less
+# Default options are defined as environment variables (see: ~/.config/zsh/zshenv)
+# and are picked up when less is invoked via the functions defined below. The
+# alias applies when ran directly
+
+# print output if it fits on screen and calculate the file size upon opening
+alias less="less --quit-if-one-screen --file-size"
+
+## bat
+# to ensure everything works a symlink batcat -> bat has been created
+# for default options see ~/.config/bat/config
+if is_command bat; then
+    alias cat="bat --style=plain --paging=never"
+fi
+
+
+####
 # Utilities
 #
 alias curl="noglob curl"
@@ -160,86 +180,89 @@ if is_command fzf; then
     # https://github.com/junegunn/fzf/wiki/Examples
     # fman: Fuzzy search manpage titles
     fman() {
-        typeset -la view=(
-            "echo {} | tr --delete '()' | "
-            "awk '{printf \"%s \", \$2} {print \$1}' | "
-            "xargs --no-run-if-empty man --pager=\"less -+--quit-if-one-screen\""
+        typeset -la man_cmd=(
+            "echo {} | tr --delete '()'"
+            " | awk '{printf \"%s \", \$2} {print \$1}'"
+            " | xargs --no-run-if-empty man"
         )
         local query="${*:-}"
-        source "$ZSCRIPTS/fzf_preview.zsh"
-        man --apropos . | \
+        source "$ZDOTDIR/lib/fzf_preview_args.zsh"
+        FZF_DEFAULT_COMMAND="man --apropos ." \
             fzf --query "$query" \
                 --nth="1,2" \
                 --prompt="man> " \
-                --preview="$view" \
-                --bind "enter:execute:$view" \
-                --bind 'esc:become:' \
-                --bind 'ctrl-c:become:' \
-                $p_pos \
-                $p_change
+                --preview="$man_cmd" \
+                --bind "enter:execute:$man_cmd" \
+                $preview_args
     }
 
     # fkill: Fuzzy search processes to kill
     fkill() {
-        local pid
-        if [ "$UID" != "0" ]; then
-            pid=$(ps -f -u $UID | sed 1d | fzf --multi | awk '{print $2}')
+        local ps_args
+        if [[ "$UID" != "0" ]]; then
+            ps_args="-u $UID"
         else
-            pid=$(ps -ef | sed 1d | fzf --multi | awk '{print $2}')
+            ps_args="-e"
         fi
+
+        # the CMD header is padded with a non-breaking space so we have a line
+        # across the whole screen, minus 37 to account for the other headings
+        local cmd_width=$((COLUMNS - 37))
+        local cmd_header="CMD"
+        cmd_header=${(r:$cmd_width:: :)cmd_header}
+
+        # sh_word_split is set otherwise $ps_args is interpreted as a single
+        # token
+        setopt localoptions sh_word_split
+        local pid=$( \
+            ps --format=user,pid,ppid,tname,cmd=$cmd_header $ps_args \
+                | fzf --header-lines=1 --color=header:underline \
+                | awk '{print $2}')
 
         if [[ -n $pid ]]; then
             local cmd="\"$(ps --pid $pid --format args=)\""
-            if [ -z $cmd ]; then
-                print "Exit"
-                return 0
+            if [[ -z $cmd ]]; then
+                print "error: Empty command!"
+                return 1
             fi
-            local prompt="Do you want to kill $cmd? [N/y] "
+
             local confirm=""
-            read -q "confirm?$prompt"
-            if [ $confirm = "y" ]; then
+            if read -q "confirm?Do you want to kill $cmd? [N/y] "; then
                 print "\nKilling [$pid] $cmd..."
-                echo $pid | xargs kill -${1:-9}
+                kill --signal SIGKILL $pid 
             else
-                print ${confirm:1:1}
-                print "Cancelling..."
+                print "\nCancelled"
             fi
         else
-            print "Exiting"
+            print "Exit"
         fi
     }
 
     # preview files - inspired by:
     # https://github.com/nickjj/dotfiles/blob/master/.config/zsh/.aliases
+    # although possibly a little silly if lf is installed
     pf() {
-        source "$ZSCRIPTS/fzf_preview.zsh"
-        {
-            pf_clip () {
-                local input="$1"
-                if command -v xsel > /dev/null; then
-                    print -n "$input" | xsel --clipboard
-                else
-                    print "$input"
-                fi
-            }
-            local filename
-            filename=$(
-                fzf --preview="less {}" $p_pos $p_change \
-                    --bind "ctrl-l:execute:less --clear-screen \
-                            -+--quit-if-one-screen {}" \
-                    --bind 'esc:become:' \
-                    --bind 'ctrl-c:become:')
-            pf_clip "$filename"
-        } always {
-            unfunction pf_clip
-        }
-    }
-fi
-if is_command bat; then
-    alias cat="bat --style=plain --paging=never"
-    # bat-help: Colourises help output by piping it through bat
-    bh() {
-        $1 --help | bat --language=help --style=plain
+        local fzf_default_command="ls -1 --color=always --group-directories-first"
+        local filename_idx=1
+        if command -v lsd > /dev/null; then
+            fzf_default_command="lsd --oneline --color=always --icon=always"
+            filename_idx=2
+        fi
+
+        source "$ZDOTDIR/lib/fzf_preview_args.zsh"
+        local filename=$(
+            FZF_DEFAULT_COMMAND=$fzf_default_command \
+                fzf \
+                    $preview_args \
+                    --ansi \
+                    --preview="less {$filename_idx}" \
+                    --bind="ctrl-l:execute:less --clear-screen {$filename_idx}" \
+                    --header="$(print -P current dir: %3~)"
+        )
+        print -z -- $filename
+        if [[ -v TMUX ]]; then
+            tmux set-buffer -w $filename
+        fi
     }
 fi
 
@@ -272,68 +295,79 @@ findi() {
 # Find in Files
 #
 if is_command rg; then
-    _rg() {
-        # page automatically if outputting to a terminal
-        if [ -t 1 ]; then
-            rg --smart-case --pretty $@ | less --RAW-CONTROL-CHARS
-        else
-            rg --smart-case --pretty $@
-        fi
+    rg() {
+        # page automatically if needed
+        command rg --smart-case --pretty $@ | less
     }
-    alias rg="noglob _rg"
     alias rgu="rg --unrestricted --unrestricted"
     alias rgl="rg --fixed-strings"
-    alias rglu="rgl --unrestricted --unrestricted"
+    alias rglu="rgu --fixed-strings"
+    alias rgul="rglu"
 
     if is_command fzf && is_command bat; then
-        # ripgrep and fzf integration based on code from:
+        # ripgrep and fzf integration inspired by:
         # https://github.com/junegunn/fzf/blob/master/ADVANCED.md#ripgrep-integration
-        _rf() {
-            local rg_flags="$1" initial_query="$2" 
+        rf() {
+            local options=${(M)@##-*}
+            local positionals=(${@##-*})
+            local rg_cmd="rg "$options
+            local query=$positionals[1]
+            local search_path=$positionals[2]
 
-            local rg_cmd alt_enter
-            printf -v rg_cmd '%s' "rg --column --line-number --no-heading " \
-                "--color=always --smart-case $rg_flags"
-            printf -v alt_enter '%s' "alt-enter:unbind(change,alt-enter)" \
-                "+change-prompt(2. fzf> )+enable-search+clear-query"
+            # display options for fzf
+            rg_cmd+="--smart-case --pretty --column --line-number --no-heading"
 
-            # I'd use lesspipe but bat provides line highlighting
-            local bat_cmd escape_dots pager_opts bat_full
-            bat_cmd="bat --color=always --highlight-line={2}"
+            # binding to switch from ripgrep to fzf search mode
+            local bind_alt_enter=(
+                "--bind=alt-enter:unbind(change,alt-enter)"
+                "--bind=alt-enter:+change-prompt(2. fzf> )"
+                "--bind=alt-enter:+enable-search+clear-query")
 
-            # Escape dots in filename, otherwise they are interpreted as part
-            # of an if statement used by --prompt option in less
-            escape_dots="f={1}; f=\${f/./\\\.};"
+            # override LESSOPEN so we can highlight the matching line if the
+            # selected file is opened with less
+            local bat_cmd="bat --color=always --highlight-line={2}"
+            local less_cmd=(
+                "LESSOPEN='| $bat_cmd %s'; LESSCLOSE='';"
+                "less --file-size --jump-target=.2 +G{2} {1}")
 
-            # Pager option passed to bat. Values for less' --prompt flag can be
-            # found in the man page for less under the section on PROMPTS
-            printf -v pager_opts '%s ' \
-                "--pager=\"less +G +{2} -+--quit-if-one-screen " \
-                    "--prompt='M\$f lines %lt-%lb?L/%L. ?pB%pB\% .?e(END) %t'\""
-
-            printf -v bat_full '%s ' $escape_dots $bat_cmd $pager_opts
-
-            source "$ZSCRIPTS/fzf_preview.zsh"
-            : | fzf --ansi --disabled --query "$initial_query" \
-                --bind "start:reload:$rg_cmd {q}" \
-                --bind "change:reload:sleep 0.1; $rg_cmd {q} || true" \
-                --bind $alt_enter \
-                --color "hl:-1:underline,hl+:-1:underline:reverse" \
-                --prompt "1. ripgrep> " \
-                --delimiter : \
+            source "$ZDOTDIR/lib/fzf_preview_args.zsh"
+            preview_window+=",+{2}+3/3,~3"
+            local rg_cmd_fzf="$rg_cmd {q} $search_path"
+            fzf --ansi --disabled --query "$query" \
+                --bind "start:reload:$rg_cmd_fzf" \
+                --bind "change:reload:sleep 0.1; $rg_cmd_fzf || true" \
                 --preview "$bat_cmd {1}" \
-                --bind "ctrl-l:execute($bat_full {1})" \
-                --bind "ctrl-e:become($EDITOR {1} +{2})" \
-                --bind 'esc:become:' \
-                --bind 'ctrl-c:become:' \
-                --preview-window "up,60%,border-bottom,+{2}+3/3,~3" \
-                $p_pos \
-                $p_change
+                --bind="ctrl-l:execute:$less_cmd" \
+                --color "hl:-1:underline,hl+:-1:underline:reverse" \
+                --delimiter : \
+                --prompt "1. ripgrep> " \
+                $bind_alt_enter \
+                $preview_args \
+                $preview_window
         }
-        alias rf="noglob _rf \"\""
-        alias rfu="noglob _rf \"--unrestricted --unrestricted\""
-        alias rfl="noglob _rf --fixed-strings"
-        alias rful="noglob _rf \"--unrestricted ---unrestricted -fixed-strings\""
+
+        expand_rg_alias() {
+            local cmd=$1 expansion
+            expansion=${aliases[$cmd]}
+            if [[ -n $expansion ]]; then
+                local head=${expansion%%\ *}
+                local tail=${expansion#$head}
+                expand_rg_alias $head
+                rg_aliases[$cmd]="$rg_aliases[$head]$tail"
+            fi
+        }
+
+        # add rf* aliases by cycling through and expanding the rg* aliases
+        # specified above
+        () {
+            local alias_
+            typeset -lA rg_aliases
+            for alias_ in ${(M)${(k)aliases}##rg*}; do
+                expand_rg_alias ${alias_}
+                alias ${alias_:s/g/f}="rf $rg_aliases[$alias_]"
+            done
+            unfunction expand_rg_alias
+        }
     fi
 fi
 if is_command ack; then
@@ -352,15 +386,6 @@ alias mnt="mount | grep -E ^/dev | column -t"
 historystat() {
     history 0 | awk '{print $2}' | sort | uniq -c | sort -n -r | head
 }
-
-
-####
-# Pagers
-#
-# less - see zshenv
-# or for syntax highlighting and extra overhead you can use vim as a pager
-alias vless="/usr/share/vim/vim90/macros/less.sh"
-# or you could use `view` which is equal to `vim -R`
 
 
 ####

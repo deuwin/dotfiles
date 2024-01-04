@@ -36,6 +36,7 @@ typeset -ag _zshrc_watch_files=(
     "scripts/*"
     "third_party/*"
     "local/*"
+    "lib/*"
 )
 
 _zshrc_restart_precmd() {

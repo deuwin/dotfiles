@@ -24,8 +24,8 @@ export KEYTIMEOUT=50                    # Wait time between multicharacter
 #     of madness...
 #     https://felipec.wordpress.com/2021/06/05/adventures-with-man-color/
 #     https://wiki.archlinux.org/title/Color_output_in_console#less
-LESS="--quit-if-one-screen "   # just display output if it fits on screen
-LESS+="--ignore-case "         # smart case search
+# LESS="--quit-if-one-screen "   # just display output if it fits on screen
+LESS="--ignore-case "          # smart case search
 LESS+="--incsearch "           # search as you type
 LESS+="--jump-target=.5 "      # current search result in middle of screen
 LESS+="--LONG-PROMPT "         # more info on status line
@@ -36,10 +36,18 @@ LESS+="--mouse "               # mouse support
 LESS+="--wheel-lines=3 "       # mouse scroll speed
 LESS+="--hilite-search "       # only highlight last result from search
 export LESS
+
+# set filename to store history of less commands
 export LESSHISTFILE="$HOME/.local/state/lesshst"
+# keybinds for less, to set wrap around search by default
 export LESSKEYIN="$HOME/.config/lesskey"
+# set pre and post processors
 export LESSOPEN="| lesspipe.sh %s"
 export LESSCLOSE="lesspipe.sh %s %s"
+
+# man
+# align short man pages to top of screen and calculate file size when opening 
+export MANPAGER="less --clear-screen --file-size"
 
 # PATH
 # https://zsh.sourceforge.io/Guide/zshguide02.html#l24

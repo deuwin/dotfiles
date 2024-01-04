@@ -248,27 +248,24 @@ if ! is_command fzf; then
 else
     compdef _files _fzf_commit_browser
     _fzf_commit_browser() {
-        source "$ZSCRIPTS/fzf_preview.zsh"
-        local preview=$(printf '%s' \
-            "echo {} | grep --only-matching '[a-f0-9]\{7\}' |" \
-            "head -1 | xargs git show --color=always")
-        local lopts="--RAW-CONTROL-CHARS -+--quit-if-one-screen --clear-screen"
-        local bind=$preview
+        local git_show=(
+            "echo {} | grep --only-matching '[a-f0-9]\{7\}' |"
+            "head --lines=1 | xargs git show --color=always"
+        )
+        local preview bind
         if command -v delta > /dev/null; then
-            preview+="| delta"
-            bind+="| delta --paging always --pager \"less $lopts\""
+            preview="| delta"
+            pager="| delta --paging always --pager \"less --clear-screen\""
         else
-            bind+="| less $lopts"
+            pager="| less --clear-screen"
         fi
 
-        git log --graph --format=one-line --color=always "$@" |
+        source "$ZDOTDIR/lib/fzf_preview_args.zsh"
+        FZF_DEFAULT_COMMAND="git log --graph --format=one-line --color=always $@" \
             fzf --ansi --no-sort --exact \
-                --preview $preview \
-                --bind "enter:execute:$bind" \
-                --bind 'esc:become:' \
-                --bind 'ctrl-c:become:' \
-                $p_pos \
-                $p_change
+                --preview="$git_show$preview" \
+                --bind "enter:execute:$git_show$pager" \
+                $preview_args
     }
 fi
 
