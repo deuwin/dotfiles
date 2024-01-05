@@ -13,21 +13,34 @@
 # same rules as for tmux window names.
 #
 
+_impure:wn:is_active_pane() {
+    [[ $TMUX_PANE == \
+        $(tmux list-panes \
+            -t $IMPURE_RENAME_TARGET \
+            -f "#{pane_active}" \
+            -F "#{pane_id}") ]]
+}
+
+_impure:wn:is_option_set() {
+    # $1 - tmux option name
+    # $2 - scope: pane, window, etc (optional)
+    [[ -n $(tmux show-options -qv$2 -t $TMUX_PANE $1) ]]
+}
+
 ####
-# set name
-# function defines itself depending on if this zsh instance is within a tmux
-# session
-#
+# set_name
+# Renames window if the pane is active and hasn't been set by the user. New name
+# is saved in case it is needed by change pane hook or if the user's window name
+# is cleared
 _impure:wn:set_name() {
     if [[ -n $TMUX ]]; then
         _impure:wn:set_name() {
-            # store new name
-            tmux set-option -p "@impure_window_name" "$1"
-            # check if set by user
-            if [[ -z $(tmux display-message -p "#{@iwn_user}") ]]; then
+            tmux set-option -p -t $TMUX_PANE "@impure_window_name" "$1"
+            if _impure:wn:is_active_pane && \
+              ! _impure:wn:is_option_set @iwn_user w; then
                 tmux \
                     set-option -w "@iwn_script" "true" \; \
-                    rename-window "$1"
+                    rename-window -t "$IMPURE_RENAME_TARGET" "$1"
             fi
         }
     else
@@ -96,7 +109,7 @@ get_free_hook_index() {
 
 set_tmux_options() {
     local options_set="@iwn_options_set"
-    if [[ -n $(tmux display-message -p "#{$options_set}") ]]; then
+    if _impure:wn:is_option_set $options_set g; then
         return
     fi
 
@@ -112,7 +125,7 @@ set_tmux_options() {
     print -v "hooks[window-pane-changed]" \
         'if-shell -F "#{@iwn_user}" {'\
         '}{' \
-            'rename-window "#{@impure_window_name}";' \
+            'rename-window "#{@impure_window_name}"' \
         '}'
 
     # check if the rename event was trigged by the user or the script and
@@ -140,6 +153,8 @@ set_tmux_options() {
 () {
     if [[ -n $TMUX ]]; then
         set_tmux_options
+        export IMPURE_RENAME_TARGET=$(\
+            tmux display-message -p "#{window_id}")
     fi
 
     # add zsh hooks
