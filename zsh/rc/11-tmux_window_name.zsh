@@ -96,17 +96,6 @@ _impure:wn:precmd() {
 ####
 # setup
 #
-get_free_hook_index() {
-    local active_hooks=(${(f)"$(tmux show-hooks -gw $1)"})
-    local index
-    if [[ ${active_hooks[-1]} =~ "\[([[:digit:]]+)\]" ]]; then
-        index=$((match + 1))
-    else
-        index=0
-    fi
-    print $index
-}
-
 set_tmux_options() {
     local options_set="@iwn_options_set"
     if _impure:wn:is_option_set $options_set g; then
@@ -144,8 +133,7 @@ set_tmux_options() {
 
     local hook cmd index
     for hook cmd in ${(kv)hooks[@]}; do
-        index=$(get_free_hook_index $hook)
-        tmux set-hook -g $hook"["$index"]" "$cmd"
+        tmux set-hook -ag $hook $cmd
     done
     tmux set-option -g $options_set "true"
 }
@@ -163,5 +151,4 @@ set_tmux_options() {
 
     # clean up
     unfunction set_tmux_options
-    unfunction get_free_hook_index 
 }
