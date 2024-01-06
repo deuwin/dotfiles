@@ -252,7 +252,7 @@ else
             "echo {} | grep --only-matching '[a-f0-9]\{7\}' |"
             "head --lines=1 | xargs git show --color=always"
         )
-        local preview bind
+        local preview pager
         if command -v delta > /dev/null; then
             preview="| delta"
             pager="| delta --paging always --pager \"less --clear-screen\""
