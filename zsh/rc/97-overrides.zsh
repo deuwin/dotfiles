@@ -5,6 +5,7 @@
 #
 () {
     local override
+    setopt localoptions nullglob
 
     # overrides for third party scripts 
     for override in $ZDOTDIR/third_party/overrides/*.zsh; do
