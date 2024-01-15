@@ -14,6 +14,8 @@ _impure_auto_ls_precmd() {
         local ls_height=${#ls_lines}
         if ((ls_height > LINES / 2)); then
             print "Auto-ls output suppressed"
+        elif ((ls_height == 0)); then
+            print "Empty directory"
         else
             print -l ${ls_lines[@]}
         fi
