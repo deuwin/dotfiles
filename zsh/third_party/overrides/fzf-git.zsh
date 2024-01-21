@@ -23,7 +23,7 @@ if is_function _fzf_git_files; then
         ) | \
             _fzf_git_fzf --multi --ansi --nth 2..,.. \
                 --border-label "📁 Files" \
-                --header "ALT-E (open in editor)" \
+                --header "ALT-E (open in editor)"$'\n\n' \
                 --bind "alt-e:execute:${EDITOR:-vim} {-1} > /dev/tty" \
                 --preview "$gdiff; $_fzf_git_cat {-1}" "$@" \
                 | cut -c4- | sed 's/.* -> //'
