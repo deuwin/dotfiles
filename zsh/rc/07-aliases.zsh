@@ -343,6 +343,7 @@ if is_command rg; then
                 $preview_args \
                 $preview_window
         }
+        compdef rf=rg
 
         expand_rg_alias() {
             local cmd=$1 expansion
