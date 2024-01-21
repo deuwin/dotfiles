@@ -307,14 +307,13 @@ if is_command rg; then
         rf() {
             local options=$@[1,-2]
             local query=$@[-1]
-            [[ $query[1] == - ]] && query=\\$query
 
             # construct rg command along with display options for fzf
             local rg_cmd
             print -v rg_cmd -- \
                 rg $options \
                     "--smart-case --pretty --column --line-number" \
-                    "--no-heading {q}"
+                    "--no-heading -- {q}"
 
             # binding to switch from ripgrep to fzf search mode
             local bind_alt_enter=(
