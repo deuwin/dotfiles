@@ -54,11 +54,28 @@ _impure:wn:set_name() {
 ####
 # set name while command is running
 #
+# Notes:
+# If one runs `tmux split-window <cmd>` i.e. running a command in a pane without
+# invoking the shell, then the window name is blank. A bit of a corner case as I
+# basically never do that.
+#
+# fg resumption isn't foolproof and will show the command being run instead of
+# the alias (if it was initially called with one)
+#
 _impure:wn:preexec() {
     local cmd_full=(${(z)1})
     local cmd_idx=1
     local sudo cmd arg dir
     local match mbegin mend
+
+    # check for special commands:
+    #   `r` for repeat
+    #   `fg` resume background command
+    if [[ $cmd_full == "r" ]]; then
+        cmd_full=(${(z)$(fc -nl -1)})
+    elif [[ $cmd_full == fg ]]; then
+        cmd_full=($jobtexts[%+])
+    fi
 
     # using sudo?
     if [[ $cmd_full[1] == "sudo" ]]; then
