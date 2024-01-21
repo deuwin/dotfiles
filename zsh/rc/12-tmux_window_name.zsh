@@ -87,14 +87,12 @@ _impure:wn:preexec() {
     cmd=$cmd_full[$cmd_idx]
 
     # show first argument?
-    local show_args="apt|git|nala|man"
-    if [[ $cmd =~ $show_args ]]; then
+    if [[ $cmd == (apt|git|nala|man) ]]; then
         arg=" $cmd_full[$((cmd_idx + 1))]"
     fi
 
     # show directory command was run in?
-    local show_dir="n?vim|^rf|^rg|^fd|^ffd|pf"
-    if [[ $cmd =~ $show_dir ]]; then
+    if [[ $cmd == (vim|nvim|rf*|rg*|fd*|ffd*|pf) ]]; then
         _impure:wn:set_name \
             "$(print -P "$sudo$cmd$arg:%$IMPURE_WINDOW_NAME_LIMIT<…<%3~%")"
     else
