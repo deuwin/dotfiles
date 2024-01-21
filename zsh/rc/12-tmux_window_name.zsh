@@ -93,7 +93,7 @@ _impure:wn:preexec() {
     fi
 
     # show directory command was run in?
-    local show_dir="n?vim|rf([[:lower:]]+)?|rg([[:lower:]]+)?|fd([[:lower:]]+)?"
+    local show_dir="n?vim|^rf|^rg|^fd|^ffd|pf"
     if [[ $cmd =~ $show_dir ]]; then
         _impure:wn:set_name \
             "$(print -P "$sudo$cmd$arg:%$IMPURE_WINDOW_NAME_LIMIT<…<%3~%")"
