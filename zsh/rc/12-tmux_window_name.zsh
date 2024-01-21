@@ -95,10 +95,11 @@ _impure:wn:preexec() {
     # show directory command was run in?
     local show_dir="n?vim|rf([[:lower:]]+)?|rg([[:lower:]]+)?|fd([[:lower:]]+)?"
     if [[ $cmd =~ $show_dir ]]; then
-        dir=$(print -P ':%1~')
+        _impure:wn:set_name \
+            "$(print -P "$sudo$cmd$arg:%$IMPURE_WINDOW_NAME_LIMIT<…<%3~%")"
+    else
+        _impure:wn:set_name "$sudo$cmd$arg"
     fi
-
-    _impure:wn:set_name "$sudo$cmd$arg$dir"
 }
 
 ####
@@ -107,7 +108,7 @@ _impure:wn:preexec() {
 _impure:wn:precmd() {
     # clear the pane title in case it was set by a running program
     print -n "\e]2;\e\\"
-    _impure:wn:set_name $(print -P "zsh:%1~")
+    _impure:wn:set_name "$(print -P "zsh:%$IMPURE_WINDOW_NAME_LIMIT<…<%3~%")"
 }
 
 ####
@@ -160,6 +161,7 @@ set_tmux_options() {
         set_tmux_options
         export IMPURE_RENAME_TARGET=$(\
             tmux display-message -p "#{window_id}")
+        export IMPURE_WINDOW_NAME_LIMIT=20
     fi
 
     # add zsh hooks
