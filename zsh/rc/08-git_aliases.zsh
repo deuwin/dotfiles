@@ -260,7 +260,7 @@ else
             pager="| less --clear-screen"
         fi
 
-        source "$ZDOTDIR/lib/fzf_preview_args.zsh"
+        source "$ZDOTDIR/lib/fzf_preview.zsh"
         FZF_DEFAULT_COMMAND="git log --graph --format=one-line --color=always $@" \
             fzf --ansi --no-sort --exact \
                 --preview="$git_show$preview" \

@@ -128,10 +128,10 @@ compdef "_files -/" rd
 
 ## less
 # Default options are defined as environment variables (see: ~/.config/zsh/zshenv)
-# and are picked up when less is invoked via the functions defined below. The
-# alias applies when ran directly
+# and are picked up when less is invoked via a script or other function. The
+# alias applies when ran directly.
 
-# print output if it fits on screen and calculate the file size upon opening
+# print output if it fits on screen and calculate file size upon opening
 alias less="less --quit-if-one-screen --file-size"
 
 ## bat
@@ -171,98 +171,6 @@ if is_command nala; then
     alias apt-get="apt"
 fi
 
-# functions
-if is_command fzf; then
-    print -v FZF_DEFAULT_OPTS -- \
-        "--layout=reverse --color=border:245 --ellipsis=… --cycle" \
-        "--scroll-off=2"
-    export FZF_DEFAULT_OPTS
-
-    # https://github.com/junegunn/fzf/wiki/Examples
-    # fman: Fuzzy search manpage titles
-    fman() {
-        typeset -la man_cmd=(
-            "echo {} | tr --delete '()'"
-            " | awk '{printf \"%s \", \$2} {print \$1}'"
-            " | xargs --no-run-if-empty man"
-        )
-        local query="${*:-}"
-        source "$ZDOTDIR/lib/fzf_preview_args.zsh"
-        FZF_DEFAULT_COMMAND="man --apropos ." \
-            fzf --query "$query" \
-                --nth="1,2" \
-                --prompt="man> " \
-                --preview="$man_cmd" \
-                --bind "enter:execute:$man_cmd" \
-                $preview_args
-    }
-
-    # fkill: Fuzzy search processes to kill
-    fkill() {
-        local ps_args
-        if [[ "$UID" != "0" ]]; then
-            ps_args="-u $UID"
-        else
-            ps_args="-e"
-        fi
-
-        # the CMD header is padded with a non-breaking space so we have a line
-        # across the whole screen, minus 40 to account for the other headings
-        local cmd_width=$((COLUMNS - 40))
-        local cmd_header=CMD${(r:$cmd_width:: :)}
-
-        local pid=$( \
-            ps --format=user,pid,ppid,tname,cmd=$cmd_header ${=ps_args} \
-                | fzf --header-lines=1 --color=header:underline \
-                | awk '{print $2}')
-
-        if [[ -n $pid ]]; then
-            local cmd="\"$(ps --pid $pid --format args=)\""
-            if [[ -z $cmd ]]; then
-                print "error: Empty command!"
-                return 1
-            fi
-
-            local confirm=""
-            if read -q "confirm?Do you want to kill $cmd? [N/y] "; then
-                print "\nKilling [$pid] $cmd..."
-                kill --signal SIGKILL $pid 
-            else
-                print "\nCancelled"
-            fi
-        else
-            print "Exit"
-        fi
-    }
-
-    # preview files - inspired by:
-    # https://github.com/nickjj/dotfiles/blob/master/.config/zsh/.aliases
-    # although possibly a little silly if lf is installed
-    pf() {
-        local fzf_default_command="ls -1 --color=always --group-directories-first"
-        local filename_idx=1
-        if command -v lsd > /dev/null; then
-            fzf_default_command="lsd --oneline --color=always --icon=always"
-            filename_idx=2
-        fi
-
-        source "$ZDOTDIR/lib/fzf_preview_args.zsh"
-        local filename=$(
-            FZF_DEFAULT_COMMAND=$fzf_default_command \
-                fzf \
-                    $preview_args \
-                    --ansi \
-                    --preview="less {$filename_idx}" \
-                    --bind="ctrl-l:execute:less --clear-screen {$filename_idx}" \
-                    --header="$(print -P current dir: %3~)"
-        )
-        print -z -- $filename
-        if [[ -v TMUX ]]; then
-            tmux set-buffer -w $filename
-        fi
-    }
-fi
-
 
 ####
 # Find Files
@@ -281,60 +189,6 @@ if is_command fdfind; then
     alias fduf="fdfu"
     alias fddu="fdd --unrestricted"
     alias fdud="fddu"
-
-    if is_command fzf; then
-        ffd() {
-            local options=$@[1,-2]
-            local query=$@[-1]
-
-            # construct rg command along with display options for fzf
-            local fd_cmd="fdfind --color=always $options -- {q}"
-
-            # binding to switch from fd to fzf search mode
-            local bind_alt_enter=(
-                "--bind=alt-enter:unbind(change,alt-enter)"
-                "--bind=alt-enter:+change-prompt(2. fzf> )"
-                "--bind=alt-enter:+enable-search+clear-query")
-
-            local less_cmd="less --clear-screen {1}"
-
-            source "$ZDOTDIR/lib/fzf_preview_args.zsh"
-            fzf --ansi --disabled --query "$query" \
-                --bind "start:reload:$fd_cmd" \
-                --bind "change:reload:sleep 0.1; $fd_cmd || true" \
-                --preview "$less_cmd" \
-                --bind="ctrl-l:execute:$less_cmd" \
-                --color "hl:-1:underline,hl+:-1:underline:reverse" \
-                --prompt "1. fd> " \
-                $bind_alt_enter \
-                $preview_args \
-                $preview_window
-        }
-        compdef ffd=fd
-
-        expand_fd_alias() {
-            local cmd=$1 expansion
-            expansion=${aliases[$cmd]}
-            if [[ -n $expansion ]]; then
-                local head=${expansion%%\ *}
-                local tail=${expansion#$head }
-                expand_fd_alias $head
-                fd_aliases[$cmd]="$fd_aliases[$head]$tail"
-            fi
-        }
-
-        # add ffd* aliases by cycling through and expanding the fd* aliases
-        # specified above
-        () {
-            local alias_
-            typeset -lA fd_aliases
-            for alias_ in ${(M)${(k)aliases}##fd*}; do
-                expand_fd_alias ${alias_}
-                alias f$alias_="ffd $fd_aliases[$alias_]"
-            done
-            unfunction expand_fd_alias
-        }
-    fi
 else
     alias fd="findi"
 fi
@@ -359,73 +213,6 @@ if is_command rg; then
     alias rgl="rg --fixed-strings"
     alias rglu="rgu --fixed-strings"
     alias rgul="rglu"
-
-    if is_command fzf && is_command bat; then
-        # ripgrep and fzf integration inspired by:
-        # https://github.com/junegunn/fzf/blob/master/ADVANCED.md#ripgrep-integration
-        rf() {
-            local options=$@[1,-2]
-            local query=$@[-1]
-
-            # construct rg command along with display options for fzf
-            local rg_cmd
-            print -v rg_cmd -- \
-                rg $options \
-                    "--smart-case --pretty --column --line-number" \
-                    "--no-heading -- {q}"
-
-            # binding to switch from ripgrep to fzf search mode
-            local bind_alt_enter=(
-                "--bind=alt-enter:unbind(change,alt-enter)"
-                "--bind=alt-enter:+change-prompt(2. fzf> )"
-                "--bind=alt-enter:+enable-search+clear-query")
-
-            # override LESSOPEN so we can highlight the matching line if the
-            # selected file is opened with less
-            local bat_cmd="bat --color=always --highlight-line={2}"
-            local less_cmd=(
-                "LESSOPEN='| $bat_cmd %s'; LESSCLOSE='';"
-                "less --file-size --jump-target=.2 +G{2} {1}")
-
-            source "$ZDOTDIR/lib/fzf_preview_args.zsh"
-            preview_window+=",+{2}+3/3,~3"
-            fzf --ansi --disabled --query ${query} \
-                --bind "start:reload:$rg_cmd" \
-                --bind "change:reload:sleep 0.1; $rg_cmd || true" \
-                --preview "$bat_cmd {1}" \
-                --bind="ctrl-l:execute:$less_cmd" \
-                --color "hl:-1:underline,hl+:-1:underline:reverse" \
-                --delimiter : \
-                --prompt "1. ripgrep> " \
-                $bind_alt_enter \
-                $preview_args \
-                $preview_window
-        }
-        compdef rf=rg
-
-        expand_rg_alias() {
-            local cmd=$1 expansion
-            expansion=${aliases[$cmd]}
-            if [[ -n $expansion ]]; then
-                local head=${expansion%%\ *}
-                local tail=${expansion#$head}
-                expand_rg_alias $head
-                rg_aliases[$cmd]="$rg_aliases[$head]$tail"
-            fi
-        }
-
-        # add rf* aliases by cycling through and expanding the rg* aliases
-        # specified above
-        () {
-            local alias_
-            typeset -lA rg_aliases
-            for alias_ in ${(M)${(k)aliases}##rg*}; do
-                expand_rg_alias ${alias_}
-                alias ${alias_:s/g/f}="rf $rg_aliases[$alias_]"
-            done
-            unfunction expand_rg_alias
-        }
-    fi
 fi
 if is_command ack; then
     alias ack="ack --smart-case --pager=less"
