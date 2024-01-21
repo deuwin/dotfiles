@@ -304,14 +304,16 @@ if is_command rg; then
         # ripgrep and fzf integration inspired by:
         # https://github.com/junegunn/fzf/blob/master/ADVANCED.md#ripgrep-integration
         rf() {
-            local options=${(M)@##-*}
-            local positionals=(${@##-*})
-            local rg_cmd="rg "$options
-            local query=$positionals[1]
-            local search_path=$positionals[2]
+            local options=$@[1,-2]
+            local query=$@[-1]
+            [[ $query[1] == - ]] && query=\\$query
 
-            # display options for fzf
-            rg_cmd+="--smart-case --pretty --column --line-number --no-heading"
+            # construct rg command along with display options for fzf
+            local rg_cmd
+            print -v rg_cmd -- \
+                rg $options \
+                    "--smart-case --pretty --column --line-number" \
+                    "--no-heading {q}"
 
             # binding to switch from ripgrep to fzf search mode
             local bind_alt_enter=(
@@ -328,10 +330,9 @@ if is_command rg; then
 
             source "$ZDOTDIR/lib/fzf_preview_args.zsh"
             preview_window+=",+{2}+3/3,~3"
-            local rg_cmd_fzf="$rg_cmd {q} $search_path"
-            fzf --ansi --disabled --query "$query" \
-                --bind "start:reload:$rg_cmd_fzf" \
-                --bind "change:reload:sleep 0.1; $rg_cmd_fzf || true" \
+            fzf --ansi --disabled --query ${query} \
+                --bind "start:reload:$rg_cmd" \
+                --bind "change:reload:sleep 0.1; $rg_cmd || true" \
                 --preview "$bat_cmd {1}" \
                 --bind="ctrl-l:execute:$less_cmd" \
                 --color "hl:-1:underline,hl+:-1:underline:reverse" \
