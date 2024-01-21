@@ -270,12 +270,71 @@ fi
 # noglob cos I'm sick of quoting
 #
 if is_command fdfind; then
-    alias fd="noglob fdfind"
-    alias fdf="fd --type f"
-    alias fdd="fd --type d"
+    fd() {
+        # page automatically if needed
+        command fdfind --color=always $@ | less
+    }
+    alias fdf="fd --type=f"
+    alias fdd="fd --type=d"
     alias fdu="fd --unrestricted"
     alias fdfu="fdf --unrestricted"
+    alias fduf="fdfu"
     alias fddu="fdd --unrestricted"
+    alias fdud="fddu"
+
+    if is_command fzf; then
+        ffd() {
+            local options=$@[1,-2]
+            local query=$@[-1]
+
+            # construct rg command along with display options for fzf
+            local fd_cmd="fdfind --color=always $options -- {q}"
+
+            # binding to switch from fd to fzf search mode
+            local bind_alt_enter=(
+                "--bind=alt-enter:unbind(change,alt-enter)"
+                "--bind=alt-enter:+change-prompt(2. fzf> )"
+                "--bind=alt-enter:+enable-search+clear-query")
+
+            local less_cmd="less --clear-screen {1}"
+
+            source "$ZDOTDIR/lib/fzf_preview_args.zsh"
+            fzf --ansi --disabled --query "$query" \
+                --bind "start:reload:$fd_cmd" \
+                --bind "change:reload:sleep 0.1; $fd_cmd || true" \
+                --preview "$less_cmd" \
+                --bind="ctrl-l:execute:$less_cmd" \
+                --color "hl:-1:underline,hl+:-1:underline:reverse" \
+                --prompt "1. fd> " \
+                $bind_alt_enter \
+                $preview_args \
+                $preview_window
+        }
+        compdef ffd=fd
+
+        expand_fd_alias() {
+            local cmd=$1 expansion
+            expansion=${aliases[$cmd]}
+            if [[ -n $expansion ]]; then
+                local head=${expansion%%\ *}
+                local tail=${expansion#$head }
+                expand_fd_alias $head
+                fd_aliases[$cmd]="$fd_aliases[$head]$tail"
+            fi
+        }
+
+        # add ffd* aliases by cycling through and expanding the fd* aliases
+        # specified above
+        () {
+            local alias_
+            typeset -lA fd_aliases
+            for alias_ in ${(M)${(k)aliases}##fd*}; do
+                expand_fd_alias ${alias_}
+                alias f$alias_="ffd $fd_aliases[$alias_]"
+            done
+            unfunction expand_fd_alias
+        }
+    fi
 else
     alias fd="findi"
 fi
