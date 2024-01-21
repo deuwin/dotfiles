@@ -173,8 +173,9 @@ fi
 
 # functions
 if is_command fzf; then
-    printf -v FZF_DEFAULT_OPTS "%s " \
-        "--layout=reverse --color=border:245 --ellipsis=… --cycle"
+    print -v FZF_DEFAULT_OPTS -- \
+        "--layout=reverse --color=border:245 --ellipsis=… --cycle" \
+        "--scroll-off=2"
     export FZF_DEFAULT_OPTS
 
     # https://github.com/junegunn/fzf/wiki/Examples
