@@ -206,16 +206,12 @@ if is_command fzf; then
         fi
 
         # the CMD header is padded with a non-breaking space so we have a line
-        # across the whole screen, minus 37 to account for the other headings
-        local cmd_width=$((COLUMNS - 37))
-        local cmd_header="CMD"
-        cmd_header=${(r:$cmd_width:: :)cmd_header}
+        # across the whole screen, minus 40 to account for the other headings
+        local cmd_width=$((COLUMNS - 40))
+        local cmd_header=CMD${(r:$cmd_width:: :)}
 
-        # sh_word_split is set otherwise $ps_args is interpreted as a single
-        # token
-        setopt localoptions sh_word_split
         local pid=$( \
-            ps --format=user,pid,ppid,tname,cmd=$cmd_header $ps_args \
+            ps --format=user,pid,ppid,tname,cmd=$cmd_header ${=ps_args} \
                 | fzf --header-lines=1 --color=header:underline \
                 | awk '{print $2}')
 
