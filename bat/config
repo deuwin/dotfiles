@@ -10,3 +10,6 @@
 # Enable this to use italic text on the terminal. This is not supported on all
 # terminal emulators (like tmux, by default):
 --italic-text=always
+
+# Display line numbers
+--style=numbers,grid
