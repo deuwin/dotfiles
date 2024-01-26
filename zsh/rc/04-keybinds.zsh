@@ -115,7 +115,7 @@ zle -N edit-command-line
 bindkey "^X^E" edit-command-line
 
 # resume background job
-# Ctrl-z
+# Ctrl+z
 # first seen: https://old.reddit.com/r/vim/comments/9bm3x0/ctrlz_binding/
 # tweaked as some programs had issues going to background if Ctrl-z was used
 # multiple times
