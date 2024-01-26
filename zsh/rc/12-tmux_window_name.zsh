@@ -68,6 +68,10 @@ _impure:wn:preexec() {
     local sudo cmd arg dir
     local match mbegin mend
 
+    # skip very short lived commands
+    [[ $cmd_full == (-|cd*|ls|l.|la|ll*|d) ]] ||
+        [[ -d $cmd_full ]] && return
+
     # check for special commands:
     #   `r` for repeat
     #   `fg` resume background command
