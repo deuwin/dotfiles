@@ -10,14 +10,10 @@ source $ZDOTDIR/third_party/zsh-autocomplete/zsh-autocomplete.plugin.zsh
 zstyle ":autocomplete:*complete*:*" insert-unambiguous yes
 # all history widgets
 zstyle ":autocomplete:*history*:*" insert-unambiguous yes
-# delay in seconds (float) after typing stops before showing completions
-zstyle ":autocomplete:*" min-delay 0.125
 # limit completions and history search to a third of the screen
 zstyle -e ":autocomplete:*" list-lines "reply=( $((LINES / 3)) )"
-# <enter>: execute selected item from menu
-bindkey -M menuselect '\r' .accept-line
 # don't show completions that begin with two or more dots
-zstyle ':autocomplete:*' ignored-input '..##'
+zstyle ":autocomplete:*" ignored-input "..##"
 
 # autosuggestions
 # https://github.com/zsh-users/zsh-autosuggestions
