@@ -64,9 +64,6 @@ _impure:wn:set_name() {
 #
 _impure:wn:preexec() {
     local cmd_full=(${(z)1})
-    local cmd_idx=1
-    local sudo cmd arg dir
-    local match mbegin mend
 
     # skip very short lived commands
     [[ $cmd_full == (-|cd*|ls|l.|la|ll*|d) ]] ||
@@ -82,17 +79,18 @@ _impure:wn:preexec() {
     fi
 
     # using sudo?
+    local cmd_idx=1
     if [[ $cmd_full[1] == "sudo" ]]; then
-        sudo="sudo "
+        local sudo="sudo "
         ((cmd_idx++))
     fi
 
     # command
-    cmd=$cmd_full[$cmd_idx]
+    local cmd=$cmd_full[$cmd_idx]
 
     # show first argument?
     if [[ $cmd == (apt|git|nala|man) ]]; then
-        arg=" $cmd_full[$((cmd_idx + 1))]"
+        local arg=" $cmd_full[$((cmd_idx + 1))]"
     fi
 
     # show directory command was run in?
