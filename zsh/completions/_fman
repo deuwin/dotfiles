@@ -1,0 +1,217 @@
+#compdef fman
+#
+# This completion file is a stripped down version of the man completion provided
+# by zsh (https://sourceforge.net/p/zsh/code/ci/master/tree/Completion/Unix/Command/_man)
+# These modifications remove processing of optional command line arguments and
+# autocompletion of section numbers.
+#
+# ---
+#
+# The Z Shell is copyright (c) 1992-2017 Paul Falstad, Richard Coleman,
+# Zoltán Hidvégi, Andrew Main, Peter Stephenson, Sven Wischnowsky, and
+# others.  All rights reserved.  Individual authors, whether or not
+# specifically named, retain copyright in all changes; in what follows, they
+# are referred to as `the Zsh Development Group'.  This is for convenience
+# only and this body has no legal status.  The Z shell is distributed under
+# the following licence; any provisions made in individual files take
+# precedence.
+#
+# Permission is hereby granted, without written agreement and without
+# licence or royalty fees, to use, copy, modify, and distribute this
+# software and to distribute modified versions of this software for any
+# purpose, provided that the above copyright notice and the following
+# two paragraphs appear in all copies of this software.
+#
+# In no event shall the Zsh Development Group be liable to any party for
+# direct, indirect, special, incidental, or consequential damages arising out
+# of the use of this software and its documentation, even if the Zsh
+# Development Group have been advised of the possibility of such damage.
+#
+# The Zsh Development Group specifically disclaim any warranties, including,
+# but not limited to, the implied warranties of merchantability and fitness
+# for a particular purpose.  The software provided hereunder is on an "as is"
+# basis, and the Zsh Development Group have no obligation to provide
+# maintenance, support, updates, enhancements, or modifications.
+#
+
+_fman() {
+  local -a context line state state_descr
+  local -aU sects
+  local -A val_args sect_descs
+
+  if (( ! $#_manpath )); then
+    local mp
+    mp=( ${(s.:.)$(manpath 2>/dev/null)} )
+    [[ "$mp" == *:* ]] && mp=( ${(s.:.)mp} )
+    if (( $#mp )); then
+      _manpath=( $mp )
+    elif (( $#manpath )); then
+      _manpath=( $manpath )
+    fi
+  fi
+
+  (( $#_manpath )) ||
+      _manpath=( /usr/man(-/) /(opt|usr)/(pkg|dt|share|X11R6|local)/(cat|)man(-/) )
+
+  # `sman' is the SGML manual directory for Solaris 7.
+  # 1M is system administrator commands on SVR4
+
+  local mrd=(${^_manpath/\%L/${LANG:-En_US.ASCII}}/mandb(N))
+
+  # $sect_dirname is from the filesystem, the "3" in "/usr/share/man/man3"
+  # These are used by _fman_pages
+  local sect_dirname
+
+  local dirs=( $^_manpath/(sman|man|cat)*/ )
+  local awk='{print $1}'
+
+  # Ignore directories with no pages inside
+  dirs=( ${^dirs}(#qFN) )
+
+  # Solaris 11 and on have a man-index directory that doesn't contain manpages
+  dirs=( ${dirs:#*/man-index/} )
+  sects=( ${(o)${${dirs##*(man|cat)}%.*}%/} )
+
+  # If we've got this far, we can build our look-up table for descriptions of
+  # the more common sections. Unless otherwise labelled, the more specific ones
+  # come from Solaris or one of its variants
+  (( $#sects )) && () {
+    sect_descs=(
+      0        'library headers'
+      1        'general commands'
+      1cups    'CUPS commands'
+      1m       'maintenance commands'
+      1openssl 'OpenSSL commands'
+      2        'system calls'
+      3        'library functions'
+      3c       'C library functions'
+      3curses  'curses library functions'
+      3elf     'ELF library functions'
+      3f       'Fortran library functions'
+      3lua     'Lua features' # NetBSD
+      3mail    'mailbox library functions'
+      3openssl 'OpenSSL library functions'
+      3pam     'PAM library functions'
+      3pool    'pool configuration library functions'
+      3proc    'process control library functions'
+      3x11     'Xlib functions'
+      3xcurses 'curses library functions [X/Open]'
+      4        'devices and drivers'
+      5        'file formats and conventions'
+      3openssl 'OpenSSL configuration files'
+      6        'games'
+      7        'miscellanea'
+      8        'maintenance commands and procedures'
+      9        'kernel features'
+      9lua     'Lua kernel bindings' # NetBSD
+      l        'local documentation' # AIX, etc. — TCL on some systems?
+      n        'new documentation' # AIX, etc.
+      o        'old documentation' # AIX, etc.
+      p        'public documentation' # AIX, etc.
+      x        'X11 features'
+    )
+
+    # Add POSIX variants
+    for 1 in ${(k)sect_descs}; do
+      [[ $1 == <-> ]] || continue
+      sect_descs+=( "${1}p" "${sect_descs[$1]} [POSIX]" )
+    done
+
+    # Add OS-specific stuff that's too risky for or overrides the general list
+    [[ $OSTYPE == darwin*  ]] && sect_descs+=( n 'Tcl/Tk features' )
+    [[ $OSTYPE == openbsd* ]] && sect_descs+=( 3p 'Perl features' )
+    # @todo Oracle Solaris 11.4 adopts the BSD/Linux structure, making many of
+    # these inaccurate — this should be handled accordingly in the future. If
+    # OSTYPE isn't helpful (since other Solaris descendants may not follow
+    # suit), we could perhaps use the presence of SysV-style sections under
+    # _manpath as the determinant
+    [[ $OSTYPE == solaris* ]] && sect_descs+=(
+      1t  'Tcl/Tk features'
+      3m  'mathematical library functions'
+      4   'file formats and conventions'
+      5   'miscellanea'
+      7   'special files'
+      7d  'devices'
+      7fs 'file systems'
+      7i  'ioctl requests'
+      7m  'STREAMS modules'
+      7p  'protocols'
+      9e  'driver entry points'
+      9f  'driver functions'
+      9p  'driver properties'
+      9s  'driver data structures'
+    )
+  }
+
+  [[ $state == sects ]] && {
+    (( $#sects )) || {
+      _message -e sections 'manual section'
+      return 1
+    }
+
+    # Build specs from descriptions
+    local s
+    local -a specs
+    for s in $sects; do
+      specs+=( "${s}:${(b)sect_descs[$s]}" )
+    done
+    specs=( ${specs%:} )
+
+    local variant
+    _pick_variant -r variant openbsd='-S subsection' $OSTYPE ---
+    if [[ $variant == (darwin|dragonfly|freebsd|linux)* ]]; then
+      _sequence -s : _describe -t sections 'manual section' specs
+    elif [[ $variant == solaris* ]]; then
+      _sequence -s , _describe -t sections 'manual section' specs
+    else
+      _describe -t sections 'manual section' specs
+    fi
+    return
+  }
+
+  local expl
+  if zstyle -t ":completion:${curcontext}:manuals" separate-sections; then
+    local d ret=1
+
+    (( $#sects )) || return 1
+
+    if [[ $PREFIX$SUFFIX == */* ]]; then
+      _tags manuals.${^sects} files
+    else
+      _tags manuals.${^sects}
+    fi
+
+    while _tags; do
+      for sect_dirname in $sects; do
+        d=$sect_dirname
+        (( $+sect_descs[$d] )) && d+=" (${sect_descs[$d]})"
+
+        _requested manuals.$sect_dirname expl "manual page, section $d" _fman_pages &&
+            ret=0
+      done
+      [[ $PREFIX$SUFFIX == */* ]] &&
+      _requested files expl directory _files -/ && ret=0
+      (( ret )) || return 0
+    done
+    return 1
+  else
+    sect_dirname=
+    _wanted manuals expl 'manual page' _fman_pages
+  fi
+}
+
+_fman_pages() {
+  # What files corresponding to manual pages can end in.
+  local suf='.((?|<->*|ntcl)(|.gz|.bz2|.z|.Z|.lzma))'
+
+  local pages
+  pages=( ${(M)dirs:#*$sect_dirname/} )
+  pages=( ${^pages}/"*${sect:+.$sect"*"}" )
+  pages=( ${^~pages}(N:t) )
+
+  (($#mrd)) && pages[$#pages+1]=($(awk $awk $mrd))
+
+  compadd "$@" - ${pages%$~suf}
+}
+
+_fman "$@"

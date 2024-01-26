@@ -18,3 +18,6 @@ zstyle ":autocomplete:*" ignored-input "..##"
 # autosuggestions
 # https://github.com/zsh-users/zsh-autosuggestions
 source $ZDOTDIR/third_party/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# custom completion functions
+fpath+=($ZDOTDIR/completions)
