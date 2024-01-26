@@ -48,12 +48,13 @@ setopt   hist_reduce_blanks     # remove extra blanks from each command
 
 # do not add commands to the history file that match the following pattern,
 # however they will be available in local history
-export HISTORY_IGNORE='(fg*|d|d *)'
+export HISTORY_IGNORE='(fg*|d|d *|r)'
 
 ####
 # Navigation
 #
 setopt auto_cd           # cd without cd
+setopt cd_silent         # Don't print working directory after `cd -`
 setopt auto_pushd        # Push visited directories to the stack
 setopt pushd_ignore_dups # Don't store duplicates in the stack
 setopt pushd_minus       # Reverse meaning of `+` and `-`, more consistent with `cd -`
