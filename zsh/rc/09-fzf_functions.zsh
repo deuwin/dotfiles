@@ -170,7 +170,11 @@ fi
 if is_command rg; then
     rf() {
         local options=$@[1,-2]
-        local query=$@[-1]
+        local query=${(b)@[-1]}
+
+        # quote options only if set, otherwise we get '' which is interpreted as
+        # an empty positional argument
+        options=${options:+${(b)options}}
 
         local rg_common_opts="--smart-case --pretty --line-number --no-heading"
         local search_cmd="rg $options $rg_common_opts -- {q}"
