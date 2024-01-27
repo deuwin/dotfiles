@@ -17,8 +17,13 @@
 bindkey -e
 
 # fzf keybinds
-typeset -g __fzf_key_bindings_options
-source $ZDOTDIR/third_party/fzf_key_bindings.zsh
+() {
+    local keybinds=/usr/share/doc/fzf/examples/key-bindings.zsh
+    if is_command fzf && [[ -e $keybinds ]]; then
+        typeset -g __fzf_key_bindings_options
+        source $keybinds
+    fi
+}
 
 # additional keybinds not provided by /etc/zsh/zshrc
 key[Control+Left]="${terminfo[kLFT5]}"
