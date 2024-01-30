@@ -89,7 +89,7 @@ _impure:wn:preexec() {
     local cmd=$cmd_full[$cmd_idx]
 
     # show first argument?
-    if [[ $cmd == (apt|git|nala|man) ]]; then
+    if [[ $cmd == (apt|git|nala|man|less|ssh) ]]; then
         local arg=" $cmd_full[$((cmd_idx + 1))]"
     fi
 
