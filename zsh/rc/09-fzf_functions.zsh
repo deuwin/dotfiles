@@ -177,7 +177,7 @@ if is_command rg; then
         options=${options:+${(b)options}}
 
         local rg_common_opts="--smart-case --pretty --line-number --no-heading"
-        local search_cmd="rg $options $rg_common_opts -- {q}"
+        local search_cmd="rg $rg_common_opts $options -- {q}"
         local search_prompt="1. ripgrep> "
 
         local preview_cmd
