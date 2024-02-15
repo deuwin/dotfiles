@@ -10,13 +10,12 @@ ZSHSTATE="$HOME/.local/state/zsh"
 if [[ ! -d $ZSHSTATE ]]; then
     command mkdir -p $ZSHSTATE
 fi
-export ZSCRIPTS="$ZDOTDIR/scripts"
-export HISTFILE="$ZSHSTATE/zsh_history" # History filepath
-export HISTSIZE=100000                  # Maximum events for internal history
-export SAVEHIST=$HISTSIZE               # Maximum events in history file
-export DIRSTACKSIZE=9                   # Maximum size of directory stack
-export KEYTIMEOUT=50                    # Wait time between multicharacter
-                                        # keybinds (hundredths of seconds)
+HISTFILE="$ZSHSTATE/zsh_history" # History filepath
+HISTSIZE=100000                  # Maximum events for internal history
+SAVEHIST=$HISTSIZE               # Maximum events in history file
+DIRSTACKSIZE=9                   # Maximum size of directory stack
+KEYTIMEOUT=50                    # Wait time between multicharacter
+                                 # keybinds (hundredths of seconds)
 
 # less
 #   - set here so man also uses these settings
@@ -24,7 +23,6 @@ export KEYTIMEOUT=50                    # Wait time between multicharacter
 #     of madness...
 #     https://felipec.wordpress.com/2021/06/05/adventures-with-man-color/
 #     https://wiki.archlinux.org/title/Color_output_in_console#less
-# LESS="--quit-if-one-screen "   # just display output if it fits on screen
 LESS="--ignore-case "          # smart case search
 LESS+="--incsearch "           # search as you type
 LESS+="--jump-target=.5 "      # current search result in middle of screen
