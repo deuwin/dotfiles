@@ -72,7 +72,7 @@ fkill() {
         local confirm=""
         if read -q "confirm?Do you want to kill $cmd? [N/y] "; then
             print "\nKilling [$pid] $cmd..."
-            kill --signal SIGKILL $pid 
+            builtin kill -s SIGKILL $pid 
         else
             print "\nCancelled"
         fi
