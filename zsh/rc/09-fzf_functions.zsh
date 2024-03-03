@@ -31,11 +31,11 @@ fman() {
     local query="${*:-}"
     source "$ZDOTDIR/lib/fzf_preview.zsh"
     FZF_DEFAULT_COMMAND="man --apropos ." \
-        fzf --query "$query" \
+        fzf --query="$query" \
             --nth="1,2" \
             --prompt="man> " \
             --preview="$man_cmd" \
-            --bind "enter:execute:$man_cmd" \
+            --bind="enter:execute:$man_cmd" \
             $preview_args
 }
 
