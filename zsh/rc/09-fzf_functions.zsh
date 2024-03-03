@@ -45,6 +45,7 @@ fman() {
 # fkill: Fuzzy search processes to kill
 #
 fkill() {
+    local query=$1
     local ps_args
     if [[ "$UID" != "0" ]]; then
         ps_args="-u $UID"
@@ -59,7 +60,7 @@ fkill() {
 
     local pid=$( \
         ps --format=user,pid,ppid,tname,cmd=$cmd_header ${=ps_args} \
-            | fzf --header-lines=1 --color=header:underline \
+            | fzf --header-lines=1 --color=header:underline --query=$query \
             | awk '{print $2}')
 
     if [[ -n $pid ]]; then
