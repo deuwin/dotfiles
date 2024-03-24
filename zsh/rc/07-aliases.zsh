@@ -106,10 +106,8 @@ if is_command lf; then
         if [ -f "$tmp" ]; then
             local dir="$(cat "$tmp")"
             command rm -f "$tmp"
-            if [ -d "$dir" ]; then
-                if [ "$dir" != "$(pwd)" ]; then
-                    cd "$dir"
-                fi
+            if [ -d "$dir" ] && [ "$dir" != "$(pwd)" ]; then
+                cd "$dir"
             fi
         fi
     }
