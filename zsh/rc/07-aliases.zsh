@@ -222,17 +222,6 @@ alias grepi="grep -i"
 
 
 ####
-# Convenience Aliases
-#
-# concise list of mounts
-alias mnt="mount | grep -E ^/dev | column -t"
-# list the most commonly used commands
-historystat() {
-    history 0 | awk '{print $2}' | sort | uniq -c | sort -n -r | head
-}
-
-
-####
 # Suffix Aliases
 #
 # open image in default viewer
