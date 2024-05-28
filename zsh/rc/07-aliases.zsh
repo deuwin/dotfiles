@@ -186,6 +186,11 @@ else
     alias df="df --human-readable"
 fi
 
+# generic colourisation supplied by grc
+# https://github.com/garabik/grc
+GRC_ALIASES=true
+[[ -s "/etc/grc.zsh" ]] && source /etc/grc.zsh
+
 
 ####
 # Find Files
