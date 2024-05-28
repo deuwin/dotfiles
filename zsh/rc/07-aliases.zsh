@@ -87,7 +87,6 @@ alias ll.="l. -l"
 ####
 # File Manipulation
 #
-alias trash="gio trash"
 alias cp="cp --interactive --verbose"
 alias cpv="rsync --archive --partial --human-readable --info=stats1,progress2 --modify-window=1"
 alias mv="mv --interactive --verbose"
@@ -118,6 +117,9 @@ rd() {
     fi
 }
 compdef "_files -/" rd
+if is_command trash; then
+    alias del="trash"
+fi
 
 
 ####
