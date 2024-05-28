@@ -241,6 +241,9 @@ alias -g L="| less"
 alias -g LL="2>&1 | less"
 alias -g G="| noglob grep --color=auto -i"
 alias -g GE="| noglob grep --color=auto -E"
+if is_command bat; then
+    alias -g \?="--help | bat --style=plain --language help"
+fi
 
 
 ####
