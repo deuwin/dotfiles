@@ -150,6 +150,7 @@ alias wget="wget --hsts-file=$HOME/.config/wget-hsts"
 alias tarx="tar -xvf"
 alias tailf="tail -F"
 alias cmx="chmod u+x"
+alias psg="ps -ef | grep --ignore-case"
 
 # replacements
 if is_command dust; then
