@@ -147,10 +147,29 @@ alias curl="noglob curl"
 alias diff="diff --color=auto"
 alias ip="ip --color"
 alias wget="wget --hsts-file=$HOME/.config/wget-hsts"
-alias tailf="tail -F"
+alias tailf="tail --follow=name --retry"
+alias tf="tailf"
+alias h="head"
 alias tarx="tar --extract --verbose --file"
 alias cmx="chmod u+x"
 alias psg="ps -ef | grep --ignore-case"
+if is_command bat; then
+    _head_tail() {
+        local cmd_bat="bat --style=plain" arg
+        for arg in ${argv[2,-1]}; do
+            if [[ -a $arg ]]; then
+                cmd_bat+=" --file-name $arg"
+            fi
+        done
+        command ${argv[1]} ${argv[2,-1]} | ${=cmd_bat}
+    }
+    head() {
+        _head_tail head $@
+    }
+    tail() {
+        _head_tail tail $@
+    }
+fi
 
 # replacements
 if is_command dust; then
