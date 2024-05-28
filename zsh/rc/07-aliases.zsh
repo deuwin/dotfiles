@@ -185,10 +185,6 @@ if is_command duf; then
 else
     alias df="df --human-readable"
 fi
-if is_command nala; then
-    alias apt="nala"
-    alias apt-get="apt"
-fi
 
 
 ####
