@@ -119,6 +119,7 @@ Usable for staged and unstaged, or both at the same time if you apply colours.
 | `✗`    | `\u2717` |
 | `✘`    | `\u2718` |
 | `⨯`    | `\u2A2F` |
+! `✖`    | `\u2716` |
 
 #### Untracked Files
 | Symbol | Unicode  |
@@ -162,7 +163,6 @@ Behind and ahead of remote
 | `⬍`    | `\u2B0D`  |
 | `🡙`    | `\U1F859` |
 | `↕`    | `\u2195`  |
-
 
 #### Stashed Changes
 | Symbol | Unicode  |
