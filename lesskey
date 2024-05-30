@@ -3,4 +3,4 @@
 #command
 / forw-search ^W
 ? back-search ^W
-
+\^ forw-search ^W\^\\s*
