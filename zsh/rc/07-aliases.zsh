@@ -71,12 +71,14 @@ cdt() {
 
 if is_command lsd; then
     # for default options see: ~/.config/lsd/config.yaml
-    alias ls="lsd --color=auto --group-directories-first"
+    alias ls="command lsd --color=auto --group-directories-first"
     alias l.="la --ignore-glob='[a-zA-Z]*'"
     alias lt="ls --tree"
+    alias lsd="ls --directory-only"
 else
     alias ls="ls --classify --color=auto --group-directories-first"
     alias l.="la --ignore='[a-zA-Z]*'"
+    alias lsd="ls --directory"
 fi
 alias la="ls --almost-all -v"
 alias ll="ls --human-readable -l"
