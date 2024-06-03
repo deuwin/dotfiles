@@ -1,8 +1,12 @@
-# editor
-export EDITOR="vim"
-export VISUAL="vim"
-
-export VIMINIT='let $MYVIMRC="$HOME/.config/vim/vimrc" | source $MYVIMRC'
+# editors
+if (( $+commands[nvim] )); then
+    EDITOR="nvim"
+else
+    EDITOR="vim"
+fi
+export EDITOR
+export VISUAL=$EDITOR
+export SUDO_EDITOR=vim
 
 # zsh
 export ZDOTDIR="$HOME/.config/zsh"      # Location of zsh configs

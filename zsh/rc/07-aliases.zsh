@@ -20,6 +20,17 @@ hash -d zrc=$ZDOTDIR/rc
 
 
 ####
+# Editors
+#
+() {
+    local vimrc="$HOME/.config/vim/vimrc"
+    if [[ -e $vimrc ]]; then
+        alias vim="VIMINIT='source $vimrc' vim"
+    fi
+}
+
+
+####
 # Edit and Source Configs
 #
 alias ez="cd -q $ZDOTDIR && $EDITOR && cd -q -"
