@@ -52,6 +52,14 @@ export MANPAGER="less --clear-screen --file-size"
 typeset -U path
 path+=($HOME/.local/bin)
 
+# docker
+export DOCKER_CONFIG=$HOME/.config/docker
+
+# rust
+export CARGO_HOME=$HOME/.local/share/cargo
+export RUSTUP_HOME=$HOME/.local/share/rustup
+path+=($CARGO_HOME/bin)
+
 # as required by zsh-autocomplete
 skip_global_compinit=1
 
