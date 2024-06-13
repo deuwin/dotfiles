@@ -65,6 +65,7 @@ alias gdsp="git --no-pager diff --staged" # w/o delta
 alias gloc="_git_locate_string"
 # interactive commit browser
 alias fshow="_fzf_commit_browser"
+alias fshow.="_fzf_commit_browser ."
 
 ## change stuff
 # add
