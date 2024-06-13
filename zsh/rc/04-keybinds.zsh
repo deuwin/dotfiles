@@ -17,6 +17,9 @@
 bindkey -e
 
 # fzf keybinds
+# Ctrl+r - Search through command history
+# Ctrl+t - Paste file paths into command line
+# Alt-c - cd into selected directory
 () {
     local keybinds=/usr/share/doc/fzf/examples/key-bindings.zsh
     if is_command fzf && [[ -e $keybinds ]]; then
