@@ -9,7 +9,7 @@ source $ZDOTDIR/third_party/zsh-autocomplete/zsh-autocomplete.plugin.zsh
 zstyle ":autocomplete:*complete*:*" insert-unambiguous yes
 # match lower to uppercase, `-` to `_`,  and only insert longest matching
 # prefix without matching suffix
-zstyle ":completion:*" matcher-list "m:{[:lower:]-}={[:upper:]_}" "r:|?=**"
+zstyle ":completion:*" matcher-list "m:{[:lower:]-}={[:upper:]_}" "+r:|?=**"
 # limit completions and history search to a third of the screen
 zstyle -e ":autocomplete:*" list-lines "reply=( $((LINES / 3)) )"
 # don't show completions that begin with two or more dots
