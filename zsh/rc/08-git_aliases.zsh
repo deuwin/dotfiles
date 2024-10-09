@@ -28,12 +28,8 @@ alias gclcd="_git_clone_cd"
 alias gf="git fetch --prune"
 alias gpl="git pull --rebase"
 
-## go home/toplevel
-# gh or gt, whichever your fingers prefer
-gh() {
-    cd $(git --no-optional-locks rev-parse --show-toplevel)
-}
-alias gt="gh"
+## go home
+alias gh="cd $(git --no-optional-locks rev-parse --show-toplevel)"
 
 ## branch stuff
 alias gco="git checkout"                   # switch to branch
@@ -109,6 +105,12 @@ alias gshsf="_git_show_stash_file" # show file in stash
 alias gsta="git stash apply"
 alias gstc="git stash clear"
 alias gstd="git stash drop"
+
+## tag stuff
+alias gt="git tag"
+alias gto="git tag -n"
+alias gtn="gto"
+alias gta="git tag --annotate"
 
 ## push stuff
 alias gph="git push"
