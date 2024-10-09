@@ -62,6 +62,8 @@ alias gloc="_git_locate_string"
 # interactive commit browser
 alias fshow="_fzf_commit_browser"
 alias fshow.="_fzf_commit_browser ."
+alias gsf="_fzf_commit_browser"
+alias gsf.="_fzf_commit_browser ."
 
 ## change stuff
 # add
