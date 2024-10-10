@@ -29,7 +29,12 @@ alias gf="git fetch --prune"
 alias gpl="git pull --rebase"
 
 ## go home
-alias gh="cd $(git --no-optional-locks rev-parse --show-toplevel)"
+# change to repo's top level directory
+gh() {
+    if git status --porcelain; then
+        builtin cd $(git --no-optional-locks rev-parse --show-toplevel)
+    fi
+}
 
 ## branch stuff
 alias gco="git checkout"                   # switch to branch
