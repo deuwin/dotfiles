@@ -46,9 +46,14 @@ setopt   hist_save_no_dups      # do not write a duplicate event to the history 
 setopt   hist_verify            # do not execute immediately upon history expansion
 setopt   hist_reduce_blanks     # remove extra blanks from each command
 
-# do not add commands to the history file that match the following pattern,
-# however they will be available in local history
-export HISTORY_IGNORE='(fg*|d|d *|r)'
+# do not add commands to the history file that match the following pattern
+export HISTORY_IGNORE='(fg*|r)'
+
+# Prevent commands specified in HISTORY_IGNORE from being added to local history
+zshaddhistory() {
+    emulate -L zsh
+    [[ ${1%%$'\n'} != ${~HISTORY_IGNORE} ]]
+}
 
 ####
 # Navigation
