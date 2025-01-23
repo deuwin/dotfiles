@@ -56,18 +56,22 @@ alias sudo="sudo "
 ####
 # Navigation and Listing
 #
-alias d="dirs -v"
+# Aliases with a leading space won't be added to the history file as long as
+# HIST_IGNORE_SPACE is set.
+#
+alias d=" dirs -v"
 () {
     local ii
     for ii in {1..9}; do
-        alias "$ii"="cd -${ii}"
+        alias "$ii"=" cd -${ii}"
     done
 }
 
-alias ...="cd ../.."
-alias ....="cd ../../.."
-alias .....="cd ../../../.."
-alias -- -="cd -"
+alias ..=" cd ../"
+alias ...=" cd ../.."
+alias ....=" cd ../../.."
+alias .....=" cd ../../../.."
+alias -- -=" cd -"
 
 # Create dir and cd into it
 mkcd() {
