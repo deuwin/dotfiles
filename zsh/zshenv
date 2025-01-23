@@ -17,7 +17,7 @@ fi
 HISTFILE="$ZSHSTATE/zsh_history" # History filepath
 HISTSIZE=100000                  # Maximum events for internal history
 SAVEHIST=$HISTSIZE               # Maximum events in history file
-DIRSTACKSIZE=9                   # Maximum size of directory stack
+DIRSTACKSIZE=10                  # Maximum size of directory stack
 KEYTIMEOUT=50                    # Wait time between multicharacter
                                  # keybinds (hundredths of seconds)
 
